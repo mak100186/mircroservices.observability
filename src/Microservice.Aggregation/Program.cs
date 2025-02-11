@@ -23,7 +23,17 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
 
-        builder.Services.AddOpenApi();
+        builder.Services
+            .AddCors(options =>
+            {
+                options.AddPolicy("AnyOrigin", builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod();
+                });
+            })
+            .AddOpenApi();
 
         builder.AddNpgsqlDbContext<AggregationContext>("postgresdb");
 
@@ -37,6 +47,8 @@ public class Program
         builder.Services.AddHostedService<ConverterHostedService>();
 
         var app = builder.Build();
+
+        app.UseCors("AnyOrigin");
 
         app.MapDefaultEndpoints();
 

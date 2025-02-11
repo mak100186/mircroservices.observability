@@ -13,10 +13,21 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+        builder.Services
+            .AddCors(options =>
+            {
+                options.AddPolicy("AnyOrigin", builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod();
+                });
+            })
+            .AddOpenApi();
 
         var app = builder.Build();
+
+        app.UseCors("AnyOrigin");
 
         app.MapDefaultEndpoints();
 

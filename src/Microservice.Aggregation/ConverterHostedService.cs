@@ -1,4 +1,4 @@
-﻿using Aggregation.Persistence;
+using Aggregation.Persistence;
 
 using Confluent.Kafka;
 
@@ -30,6 +30,8 @@ internal class ConverterHostedService(IConsumer<string, AggregatedWeatherForecas
                     }
 
                     await ProcessMessage(consumeResult, cancellationToken);
+
+                    cancellationToken.ThrowIfCancellationRequested();
                 }
                 catch (ConsumeException e)
                 {
