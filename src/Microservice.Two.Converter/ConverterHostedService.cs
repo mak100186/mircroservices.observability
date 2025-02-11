@@ -7,34 +7,43 @@ using static Constants.Constants;
 
 namespace Microservice.Two.Converter;
 
-internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consumer, ILogger<ConverterHostedService> logger, IProducer<string, AggregatedWeatherForecast> producer) : BackgroundService
+internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consumer, ILogger<ConverterHostedService> logger, IProducer<string, AggregatedWeatherForecast> producer) : IHostedService
 {
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    public async Task ProcessMessage(ConsumeResult<string, WeatherForecast> deliveryResult, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Timed Hosted Service running.");
+        var city = deliveryResult.Message.Key;
+        var weatherForecast = deliveryResult.Message.Value;
 
-        _consumer.Subscribe(TopicNames.OneReceiverConverter);
-
-        // When the timer should have no due-time, then do the work once now.
-        await PollClient(cancellationToken);
-
-        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(2000));
-
-        try
+        if (string.IsNullOrWhiteSpace(city))
         {
-            while (await timer.WaitForNextTickAsync(cancellationToken))
+            logger.LogWarning("Received empty city for weather forecast.");
+            return;
+        }
+
+        if (weatherForecast is null)
+        {
+            logger.LogWarning("Received null weather forecast for city {City}.", city);
+            return;
+        }
+
+        await producer.ProduceAsync(TopicNames.TwoConverterAggregator,
+            new Message<string, AggregatedWeatherForecast>
             {
-                await PollClient(cancellationToken);
-            }
-        }
-        catch (OperationCanceledException e)
-        {
-            logger.LogInformation(e, "Timed Hosted Service is stopping.");
-        }
+                Key = deliveryResult.Message.Key,
+                Value = new AggregatedWeatherForecast
+                (
+                    FeedProvider.FeedTwo,
+                    deliveryResult.Message.Key,
+                    weatherForecast.Date,
+                    weatherForecast.Temperature,
+                    weatherForecast.Summary
+                )
+            }, cancellationToken);
     }
 
-    private async Task PollClient(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
+        _consumer.Subscribe(TopicNames.TwoReceiverConverter);
         try
         {
             while (true)
@@ -65,36 +74,9 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consum
             _consumer.Close();
         }
     }
-
-    public async Task ProcessMessage(ConsumeResult<string, WeatherForecast> deliveryResult, CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        var city = deliveryResult.Message.Key;
-        var weatherForecast = deliveryResult.Message.Value;
-
-        if (string.IsNullOrWhiteSpace(city))
-        {
-            logger.LogWarning("Received empty city for weather forecast.");
-            return;
-        }
-
-        if (weatherForecast is null)
-        {
-            logger.LogWarning("Received null weather forecast for city {City}.", city);
-            return;
-        }
-
-        await producer.ProduceAsync(TopicNames.TwoConverterAggregator,
-            new Message<string, AggregatedWeatherForecast>
-            {
-                Key = deliveryResult.Message.Key,
-                Value = new AggregatedWeatherForecast
-                (
-                    FeedProvider.FeedOne,
-                    deliveryResult.Message.Key,
-                    weatherForecast.Date,
-                    weatherForecast.Temperature,
-                    weatherForecast.Summary
-                )
-            }, cancellationToken);
+        _consumer.Close();
+        await Task.CompletedTask;
     }
 }

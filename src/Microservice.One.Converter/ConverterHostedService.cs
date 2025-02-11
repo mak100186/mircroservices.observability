@@ -7,35 +7,11 @@ using static Constants.Constants;
 
 namespace Microservice.One.Converter;
 
-internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consumer, ILogger<ConverterHostedService> logger, IProducer<string, AggregatedWeatherForecast> producer) : BackgroundService
+internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consumer, ILogger<ConverterHostedService> logger, IProducer<string, AggregatedWeatherForecast> producer) : IHostedService
 {
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("Timed Hosted Service running.");
-
         _consumer.Subscribe(TopicNames.OneReceiverConverter);
-
-        // When the timer should have no due-time, then do the work once now.
-        await PollClient(cancellationToken);
-
-        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(2000));
-
-        try
-        {
-            while (await timer.WaitForNextTickAsync(cancellationToken))
-            {
-                await PollClient(cancellationToken);
-            }
-        }
-        catch (OperationCanceledException e)
-        {
-            logger.LogInformation(e, "Timed Hosted Service is stopping.");
-        }
-    }
-
-    private async Task PollClient(CancellationToken cancellationToken)
-    {
-
         try
         {
             while (true)
@@ -44,6 +20,7 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consum
                 {
                     var consumeResult = _consumer.Consume(cancellationToken);
                     logger.LogInformation("RX: {TopicPartitionOffset}: {Value}", consumeResult.TopicPartitionOffset, consumeResult.Message.Value);
+
                     if (consumeResult.IsPartitionEOF)
                     {
                         logger.LogInformation("Reached end of topic {Topic}, {Partition}, {Offset}.", consumeResult.Topic, consumeResult.Partition, consumeResult.Offset);
@@ -64,6 +41,11 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consum
             logger.LogError(e, "Closing consumer.");
             _consumer.Close();
         }
+    }
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        _consumer.Close();
+        await Task.CompletedTask;
     }
 
     public async Task ProcessMessage(ConsumeResult<string, WeatherForecast> deliveryResult, CancellationToken cancellationToken)
