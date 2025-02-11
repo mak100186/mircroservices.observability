@@ -1,3 +1,5 @@
+using Microservices.Observability.AppHost;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var messaging = builder.AddKafka(name: "messaging", 9092)
@@ -26,10 +28,17 @@ var aggregator = builder.AddProject<Projects.Microservice_Aggregation>("microser
     .WithReference(migrationRunner)
     .WaitFor(messaging)
     .WaitFor(postgresdb)
-    .WaitForCompletion(migrationRunner);
+    .WaitForCompletion(migrationRunner)
+    .WithSwaggerUI()
+    .WithReDoc()
+    .WithScalar();
 
 //Cluster 1
-builder.AddProject<Projects.Feed_Generator_One>("feed-generator-one");
+builder.AddProject<Projects.Feed_Generator_One>("feed-generator-one")
+    .WithSwaggerUI()
+    .WithReDoc()
+    .WithScalar();
+
 builder.AddProject<Projects.Microservice_One_Receiver>("microservice-one-receiver")
     .WithReference(messaging)
     .WithReference(aggregator)
@@ -43,7 +52,11 @@ builder.AddProject<Projects.Microservice_One_Converter>("microservice-one-conver
     .WaitFor(aggregator);
 
 //Cluster 2
-builder.AddProject<Projects.Feed_Generator_Two>("feed-generator-two");
+builder.AddProject<Projects.Feed_Generator_Two>("feed-generator-two")
+    .WithSwaggerUI()
+    .WithReDoc()
+    .WithScalar();
+
 builder.AddProject<Projects.Microservice_Two_Receiver>("microservice-two-receiver")
     .WithReference(messaging)
     .WithReference(aggregator)

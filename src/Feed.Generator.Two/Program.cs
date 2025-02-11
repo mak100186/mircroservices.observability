@@ -2,6 +2,8 @@ using Microservices.Observability.ServiceDefaults;
 
 using Models;
 
+using Scalar.AspNetCore;
+
 namespace Feed.Generator.Two;
 
 public class Program
@@ -22,6 +24,18 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/openapi/v1.json", "Microservice Aggregation API");
+            });
+
+            app.UseReDoc(options =>
+            {
+                options.SpecUrl = "/openapi/v1.json";
+            });
+
+            app.MapScalarApiReference();
         }
 
         app.UseHttpsRedirection();

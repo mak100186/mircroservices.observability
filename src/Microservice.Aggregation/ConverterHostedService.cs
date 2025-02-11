@@ -35,6 +35,8 @@ internal class ConverterHostedService(IConsumer<string, AggregatedWeatherForecas
                 {
                     logger.LogError(e, "Consume error: {Reason}", e.Error.Reason);
                 }
+
+                await Task.Delay(1000, cancellationToken);
             }
         }
         catch (OperationCanceledException e)
