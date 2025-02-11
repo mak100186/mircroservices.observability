@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>018d83eb-1e45-4d32-9dcd-86941b9d39d1</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
+    <PackageReference Include="Aspire.Hosting.Kafka" Version="9.0.0" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Feed.Generator.One\Feed.Generator.One.csproj" />
+	<ProjectReference Include="..\Feed.Generator.Two\Feed.Generator.Two.csproj" />
+	<ProjectReference Include="..\Microservice.Aggregation.MigrationRunner\Microservice.Aggregation.MigrationRunner.csproj" />
+	<ProjectReference Include="..\Microservice.Aggregation\Microservice.Aggregation.csproj" />
+	<ProjectReference Include="..\Microservice.One.Converter\Microservice.One.Converter.csproj" />
+	<ProjectReference Include="..\Microservice.One.Receiver\Microservice.One.Receiver.csproj" />
+	<ProjectReference Include="..\Microservice.Two.Converter\Microservice.Two.Converter.csproj" />
+	<ProjectReference Include="..\Microservice.Two.Receiver\Microservice.Two.Receiver.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,6 @@
+@Microservice.One.Receiver_HostAddress = http://localhost:5031
+
+GET {{Microservice.One.Receiver_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
