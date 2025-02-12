@@ -4,6 +4,11 @@ namespace Extensions.Endpoints;
 
 public static class Endpoints
 {
+    public static Delegate GetWeatherForecast => () => GetWeatherForecastForRange(1, 5);
+
+    public static Delegate GetWeatherReport => () => GetWeatherForecastForRange(0, 5);
+
+
     private static readonly string[] Cities =
     [
         "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Gold Coast", "Canberra", "Newcastle", "Central Coast", "Sunshine Coast"
@@ -14,11 +19,11 @@ public static class Endpoints
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     ];
 
-    public static Delegate GetWeatherForecast => () =>
+    private static CountryWeatherForecast GetWeatherForecastForRange(int start, int count)
     {
         CountryWeatherForecast countryWeatherForecast = new([.. Cities.Select(city =>
             {
-                WeatherForecast[] forecast = [.. Enumerable.Range(1, 5).Select(index =>
+                WeatherForecast[] forecast = [.. Enumerable.Range(start, count).Select(index =>
                     new WeatherForecast
                     (
                         DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -29,24 +34,7 @@ public static class Endpoints
             })]);
 
         return countryWeatherForecast.PopulateSummaries();
-    };
-
-    public static Delegate GetWeatherReport => () =>
-    {
-        CountryWeatherForecast countryWeatherForecast = new([.. Cities.Select(city =>
-            {
-                WeatherForecast[] forecast = [.. Enumerable.Range(0, 5).Select(index =>
-                    new WeatherForecast
-                    (
-                        DateOnly.FromDateTime(DateTime.Now.AddDays(-index)),
-                        new (Random.Shared.Next(-20, 55), TemperatureUnit.Celsius),
-                        null
-                    ))];
-                return new CityWeatherForecast(city, forecast);
-            })]);
-
-        return countryWeatherForecast.PopulateSummaries();
-    };
+    }
 
     public static CountryWeatherForecast PopulateSummaries(this CountryWeatherForecast countryWeatherForecast)
     {

@@ -13,6 +13,6 @@ public class ClientOptions
     [DataType(DataType.Url)]
     public string BaseUrl { get; set; }
 
-    [Range(0, 10_000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    [Range(0, 100_000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
     public int PollingIntervalMs { get; set; }
 }
