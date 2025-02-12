@@ -28,6 +28,19 @@ var aggregator = builder.AddProject<Projects.Microservice_Aggregation>("microser
     .WithReference(migrationRunner)
     .WaitFor(messaging)
     .WaitFor(postgresdb)
+    .WaitForCompletion(migrationRunner);
+
+var enricher = builder.AddProject<Projects.Microservice_Enrichment>("microservice-enrichment")
+    .WithSwaggerUI()
+    .WithReDoc()
+    .WithScalar();
+
+builder.AddProject<Projects.Microservice_Presenter>("microservice-presenter")
+    .WithReference(postgres)
+    .WithReference(postgresdb)
+    .WithReference(migrationRunner)
+    .WaitFor(enricher)
+    .WaitFor(postgresdb)
     .WaitForCompletion(migrationRunner)
     .WithSwaggerUI()
     .WithReDoc()
@@ -68,6 +81,15 @@ builder.AddProject<Projects.Microservice_Two_Converter>("microservice-two-conver
     .WithReference(aggregator)
     .WaitFor(messaging)
     .WaitFor(aggregator);
+
+
+
+
+
+
+
+
+
 
 
 builder.Build().Run();

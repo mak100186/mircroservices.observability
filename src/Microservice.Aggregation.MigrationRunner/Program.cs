@@ -12,8 +12,10 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.AddServiceDefaults();
+
         builder.Services.AddHostedService<Worker>();
 
+        //do i need this line? its already getting done in service defaults
         builder.Services.AddOpenTelemetry()
             .WithTracing(tracing => tracing.AddSource(Worker.ActivitySourceName));
 

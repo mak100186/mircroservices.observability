@@ -10,10 +10,10 @@ internal static class ResourceBuilderExtensions
         builder.WithOpenApiDocs("scalar-docs", "Scalar UI Docs", "scalar/v1");
 
     public static IResourceBuilder<T> WithReDoc<T>(this IResourceBuilder<T> builder) where T : IResourceWithEndpoints =>
-        builder.WithOpenApiDocs("scalar-iu-docs", "Swagger UI Docs", "swagger");
+        builder.WithOpenApiDocs("redoc-docs", "ReDoc UI Docs", "api-docs");
 
     public static IResourceBuilder<T> WithSwaggerUI<T>(this IResourceBuilder<T> builder) where T : IResourceWithEndpoints =>
-        builder.WithOpenApiDocs("redoc-docs", "ReDoc UI Docs", "api-docs");
+        builder.WithOpenApiDocs("swagger-iu-docs", "Swagger UI Docs", "swagger");
 
     private static IResourceBuilder<T> WithOpenApiDocs<T>(this IResourceBuilder<T> builder, string name, string displayName, string openApiUiPath) where T : IResourceWithEndpoints =>
         builder.WithCommand(name, displayName, executeCommand: async _ =>

@@ -14,9 +14,8 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.AddServiceDefaults();
 
-        builder.Services.AddOpenApi();
+        builder.AddServiceDefaults();
 
         builder.AddKafkaProducer<string, WeatherForecast>(Kafka.ConnectionName, config =>
             {
@@ -35,14 +34,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.MapDefaultEndpoints();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
-
-        app.UseHttpsRedirection();
+        app.UseWebDefaults();
 
         app.Run();
     }

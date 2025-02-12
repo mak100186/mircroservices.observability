@@ -20,7 +20,7 @@ tab_width = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 disable_formatter=true
-csharp_using_directive_placement = inside_namespace:silent
+csharp_using_directive_placement = outside_namespace:suggestion
 csharp_prefer_simple_using_statement = true:suggestion
 csharp_prefer_braces = true:silent
 csharp_style_namespace_declarations = file_scoped:silent
@@ -50,8 +50,8 @@ csharp_style_prefer_unbound_generic_type_in_nameof = true:suggestion
 csharp_style_prefer_utf8_string_literals = true:suggestion
 csharp_style_inlined_variable_declaration = true:suggestion
 csharp_style_deconstructed_variable_declaration = true:suggestion
-csharp_style_unused_value_assignment_preference = discard_variable:suggestion
-csharp_style_unused_value_expression_statement_preference = discard_variable:suggestion
+csharp_style_unused_value_assignment_preference = discard_variable:none
+csharp_style_unused_value_expression_statement_preference = discard_variable:none
 
 ##########################################
 # File Extension Settings
@@ -191,7 +191,7 @@ dotnet_style_qualification_for_event = false
 [*.{cs,csx,cake}]
 
 # 'using' directive preferences
-csharp_using_directive_placement = inside_namespace
+csharp_using_directive_placement = outside_namespace
 
 # Code-block preferences
 csharp_prefer_braces = true
@@ -213,9 +213,9 @@ csharp_style_expression_bodied_local_functions = true
 
 # Expression-level preferences
 csharp_style_unused_value_expression_statement_preference = discard_variable
-dotnet_diagnostic.IDE0058.severity = suggestion
+dotnet_diagnostic.IDE0058.severity = none
 csharp_style_unused_value_assignment_preference = discard_variable
-dotnet_diagnostic.IDE0059.severity = suggestion
+dotnet_diagnostic.IDE0059.severity = none
 csharp_style_throw_expression = true
 csharp_style_inlined_variable_declaration = true
 csharp_prefer_simple_default_expression = true

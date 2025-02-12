@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Scalar.AspNetCore;
 
 namespace Microservices.Observability.ServiceDefaults;
 
@@ -16,6 +18,26 @@ namespace Microservices.Observability.ServiceDefaults;
 // To learn more about using this project, see https://aka.ms/dotnet/aspire/service-defaults
 public static class Extensions
 {
+    public static IServiceCollection AddWebDefaults(this IServiceCollection services) => services
+            .ConfigureHttpJsonOptions(options =>
+            {
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            })
+            .Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            })
+            .AddCors(options =>
+            {
+                options.AddPolicy("AnyOrigin", builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod();
+                });
+            })
+            .AddOpenApi();
+
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         builder.ConfigureOpenTelemetry();
@@ -38,6 +60,8 @@ public static class Extensions
         // {
         //     options.AllowedSchemes = ["https"];
         // });
+
+        builder.Services.AddWebDefaults();
 
         return builder;
     }
@@ -104,6 +128,55 @@ public static class Extensions
             {
                 Predicate = r => r.Tags.Contains("live")
             });
+        }
+
+        return app;
+    }
+
+    public static WebApplication UseWebDefaults(this WebApplication app)
+    {
+        app.UseCors("AnyOrigin");
+
+        app.MapDefaultEndpoints();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+        }
+
+        app.UseHttpsRedirection();
+
+        return app;
+    }
+
+    public static WebApplication UseWebDefaultsWithOpenApi(this WebApplication app, bool useHttpsRedirection = true)
+    {
+        app.UseCors("AnyOrigin");
+
+        app.MapDefaultEndpoints();
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/openapi/v1.json", "Microservice Aggregation API");
+            });
+
+            app.UseReDoc(options =>
+            {
+                options.SpecUrl = "/openapi/v1.json";
+            });
+
+            app.MapScalarApiReference();
+        }
+
+        if (useHttpsRedirection)
+        {
+            app.UseHttpsRedirection();
+
         }
 
         return app;

@@ -1,6 +1,6 @@
 ﻿
 using Confluent.Kafka;
-
+using Extensions.Kafka;
 using Models;
 
 using static Constants.Constants;
@@ -50,17 +50,23 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consum
             {
                 try
                 {
-                    var consumeResult = _consumer.Consume(cancellationToken);
-                    logger.LogInformation("RX: {TopicPartitionOffset}: {Value}", consumeResult.TopicPartitionOffset, consumeResult.Message.Value);
+                    await Task.Delay(1000, cancellationToken);
 
-                    if (consumeResult.IsPartitionEOF)
+                    var consumedBatch = _consumer.ConsumeBatch(TimeSpan.FromSeconds(1), 10, cancellationToken);
+
+                    foreach (var consumeResult in consumedBatch)
                     {
-                        logger.LogInformation("Reached end of topic {Topic}, {Partition}, {Offset}.", consumeResult.Topic, consumeResult.Partition, consumeResult.Offset);
+                        logger.LogInformation("RX: {TopicPartitionOffset}: {Value}", consumeResult.TopicPartitionOffset, consumeResult.Message.Value);
+                        if (consumeResult.IsPartitionEOF)
+                        {
+                            logger.LogInformation("Reached end of topic {Topic}, {Partition}, {Offset}.", consumeResult.Topic, consumeResult.Partition, consumeResult.Offset);
+                            continue;
+                        }
 
-                        continue;
+                        await ProcessMessage(consumeResult, cancellationToken);
+
+                        cancellationToken.ThrowIfCancellationRequested();
                     }
-
-                    await ProcessMessage(consumeResult, cancellationToken);
                 }
                 catch (ConsumeException e)
                 {

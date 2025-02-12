@@ -16,9 +16,8 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.AddServiceDefaults();
 
-        builder.Services.AddOpenApi();
+        builder.AddServiceDefaults();
 
         builder.AddKafkaConsumer<string, WeatherForecast>(Kafka.ConnectionName, options =>
         {
@@ -27,22 +26,17 @@ public class Program
             options.Config.EnableAutoCommit = true;
             options.Config.AutoCommitIntervalMs = 5000;
         }, builder => builder.SetValueDeserializer(new KafkaMessageDeserializer<WeatherForecast>()));
+
         builder.AddKafkaProducer<string, AggregatedWeatherForecast>(Kafka.ConnectionName, config =>
         {
             config.SetValueSerializer(new KafkaMessageSerializer<AggregatedWeatherForecast>());
         });
+
         builder.Services.AddHostedService<ConverterHostedService>();
 
         var app = builder.Build();
 
-        app.MapDefaultEndpoints();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
-
-        app.UseHttpsRedirection();
+        app.UseWebDefaults();
 
         app.Run();
     }
