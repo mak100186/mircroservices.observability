@@ -1,4 +1,4 @@
-﻿using Confluent.Kafka;
+using Confluent.Kafka;
 
 using Extensions;
 
@@ -14,7 +14,7 @@ using static Constants.Constants;
 
 namespace Microservice.One.Receiver;
 
-internal class PollingFeedGeneratorHostedService(FeedOneClient feedOneClient, IOptions<ClientOptions> clientOptions, IProducer<string, WeatherForecast> producer, ILogger<PollingFeedGeneratorHostedService> logger) : BackgroundService
+internal sealed class PollingFeedGeneratorHostedService(FeedOneClient feedOneClient, IOptions<ClientOptions> clientOptions, IProducer<string, WeatherForecast> producer, ILogger<PollingFeedGeneratorHostedService> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {

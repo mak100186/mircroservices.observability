@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -29,13 +29,11 @@ public partial class InitialCreate : Migration
         migrationBuilder.CreateIndex(
             name: "IX_WeatherForecasts_City_Date_FeedProvider",
             table: "WeatherForecasts",
-            columns: new[] { "City", "Date", "FeedProvider" });
+            columns: ["City", "Date", "FeedProvider"]);
     }
 
     /// <inheritdoc />
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
+    protected override void Down(MigrationBuilder migrationBuilder) =>
         migrationBuilder.DropTable(
             name: "WeatherForecasts");
-    }
 }

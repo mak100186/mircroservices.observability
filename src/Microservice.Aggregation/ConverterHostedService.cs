@@ -8,11 +8,11 @@ using static Constants.Constants;
 
 namespace Microservice.Aggregation;
 
-internal class ConverterHostedService(IConsumer<string, AggregatedWeatherForecast> _consumer, IServiceProvider serviceProvider, ILogger<ConverterHostedService> logger) : IHostedService
+internal sealed class ConverterHostedService(IConsumer<string, AggregatedWeatherForecast> consumer, IServiceProvider serviceProvider, ILogger<ConverterHostedService> logger) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _consumer.Subscribe([TopicNames.OneConverterAggregator, TopicNames.TwoConverterAggregator]);
+        consumer.Subscribe([TopicNames.OneConverterAggregator, TopicNames.TwoConverterAggregator]);
         try
         {
             while (true)
@@ -21,7 +21,7 @@ internal class ConverterHostedService(IConsumer<string, AggregatedWeatherForecas
                 {
                     await Task.Delay(1000, cancellationToken);
 
-                    var consumedBatch = _consumer.ConsumeBatch(TimeSpan.FromSeconds(1), 10, cancellationToken);
+                    var consumedBatch = consumer.ConsumeBatch(TimeSpan.FromSeconds(1), 10, cancellationToken);
 
                     foreach (var consumeResult in consumedBatch)
                     {
@@ -46,12 +46,12 @@ internal class ConverterHostedService(IConsumer<string, AggregatedWeatherForecas
         catch (OperationCanceledException e)
         {
             logger.LogError(e, "Closing consumer.");
-            _consumer.Close();
+            consumer.Close();
         }
     }
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        _consumer.Close();
+        consumer.Close();
         await Task.CompletedTask;
     }
 

@@ -1,12 +1,11 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 using Extensions;
-
 using Microsoft.Extensions.Options;
 
 using Models;
 
-namespace Microservice.Two.Receiver.Client;
+namespace Microservice.Presenter.Client;
 
 public class EnricherClient(HttpClient httpClient, ILogger<EnricherClient> logger, IOptions<ClientOptions> clientOptions)
 {

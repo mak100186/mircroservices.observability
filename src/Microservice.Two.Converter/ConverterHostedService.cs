@@ -1,4 +1,4 @@
-﻿
+
 using Confluent.Kafka;
 using Extensions.Kafka;
 using Models;
@@ -7,7 +7,7 @@ using static Constants.Constants;
 
 namespace Microservice.Two.Converter;
 
-internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consumer, ILogger<ConverterHostedService> logger, IProducer<string, AggregatedWeatherForecast> producer) : IHostedService
+internal sealed class ConverterHostedService(IConsumer<string, WeatherForecast> consumer, ILogger<ConverterHostedService> logger, IProducer<string, AggregatedWeatherForecast> producer) : IHostedService
 {
     public async Task ProcessMessage(ConsumeResult<string, WeatherForecast> deliveryResult, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consum
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _consumer.Subscribe(TopicNames.TwoReceiverConverter);
+        consumer.Subscribe(TopicNames.TwoReceiverConverter);
         try
         {
             while (true)
@@ -52,7 +52,7 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consum
                 {
                     await Task.Delay(1000, cancellationToken);
 
-                    var consumedBatch = _consumer.ConsumeBatch(TimeSpan.FromSeconds(1), 10, cancellationToken);
+                    var consumedBatch = consumer.ConsumeBatch(TimeSpan.FromSeconds(1), 10, cancellationToken);
 
                     foreach (var consumeResult in consumedBatch)
                     {
@@ -77,12 +77,12 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> _consum
         catch (OperationCanceledException e)
         {
             logger.LogError(e, "Closing consumer.");
-            _consumer.Close();
+            consumer.Close();
         }
     }
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        _consumer.Close();
+        consumer.Close();
         await Task.CompletedTask;
     }
 }

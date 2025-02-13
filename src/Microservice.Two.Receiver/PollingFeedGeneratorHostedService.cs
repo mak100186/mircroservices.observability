@@ -1,4 +1,4 @@
-﻿
+
 using Confluent.Kafka;
 
 using Extensions;
@@ -15,7 +15,7 @@ using static Constants.Constants;
 
 namespace Microservice.Two.Receiver;
 
-internal class PollingFeedGeneratorHostedService(FeedTwoClient feedTwoClient, IOptions<ClientOptions> clientOptions, IProducer<string, WeatherForecast> producer, ILogger<PollingFeedGeneratorHostedService> logger) : BackgroundService
+internal sealed class PollingFeedGeneratorHostedService(FeedTwoClient feedTwoClient, IOptions<ClientOptions> clientOptions, IProducer<string, WeatherForecast> producer, ILogger<PollingFeedGeneratorHostedService> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -61,12 +61,11 @@ internal class PollingFeedGeneratorHostedService(FeedTwoClient feedTwoClient, IO
             foreach (var forecast in cityWeather.Forecast)
             {
                 //send the data to the next microservice
-                await producer.ProduceAsync(TopicNames.TwoReceiverConverter,
-                    new Message<string, WeatherForecast>
-                    {
-                        Key = cityWeather.City,
-                        Value = forecast
-                    });
+                await producer.ProduceAsync(TopicNames.TwoReceiverConverter, new Message<string, WeatherForecast>
+                {
+                    Key = cityWeather.City,
+                    Value = forecast
+                }, cancellationToken);
             }
         }
     }

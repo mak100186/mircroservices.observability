@@ -20,7 +20,7 @@ public class Program
 
         builder.AddServiceDefaults();
 
-        builder.AddNpgsqlDbContext<AggregationContext>("postgresdb");
+        builder.AddNpgsqlDbContext<AggregationContext>(Postgres.ConnectionName);
 
         builder.AddKafkaConsumer<string, AggregatedWeatherForecast>(Kafka.ConnectionName, options =>
         {

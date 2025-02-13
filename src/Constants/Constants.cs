@@ -1,4 +1,4 @@
-﻿namespace Constants;
+namespace Constants;
 
 public static class Constants
 {
@@ -6,6 +6,12 @@ public static class Constants
     {
         public const string ConnectionName = "kafka-server";
     }
+
+    public static class Postgres
+    {
+        public const string ConnectionName = "postgresdb";
+    }
+
     public static class TopicNames
     {
         public const string OneReceiverConverter = "One.Receiver-Converter";

@@ -1,8 +1,9 @@
 
 using Aggregation.Persistence;
-using Microservice.Two.Receiver.Client;
+using Microservice.Presenter.Client;
 using Microservices.Observability.ServiceDefaults;
 using Models;
+using static Constants.Constants;
 
 namespace Microservice.Presenter;
 
@@ -13,7 +14,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
 
-        builder.AddNpgsqlDbContext<AggregationContext>("postgresdb");
+        builder.AddNpgsqlDbContext<AggregationContext>(Postgres.ConnectionName);
 
         builder.Services.AddOptions<ClientOptions>()
             .Bind(builder.Configuration.GetSection(ClientOptions.ClientsSectionName))

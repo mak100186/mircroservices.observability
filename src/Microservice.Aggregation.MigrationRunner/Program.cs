@@ -2,6 +2,7 @@
 using Aggregation.Persistence;
 
 using Microservices.Observability.ServiceDefaults;
+using static Constants.Constants;
 
 namespace Microservice.Aggregation.MigrationRunner;
 
@@ -13,13 +14,13 @@ public class Program
 
         builder.AddServiceDefaults();
 
-        builder.Services.AddHostedService<Worker>();
+        builder.Services.AddHostedService<MigrationsRunner>();
 
         //do i need this line? its already getting done in service defaults
         builder.Services.AddOpenTelemetry()
-            .WithTracing(tracing => tracing.AddSource(Worker.ActivitySourceName));
+            .WithTracing(tracing => tracing.AddSource(nameof(MigrationsRunner)));
 
-        builder.AddNpgsqlDbContext<AggregationContext>("postgresdb");
+        builder.AddNpgsqlDbContext<AggregationContext>(Postgres.ConnectionName);
 
         var app = builder.Build();
 

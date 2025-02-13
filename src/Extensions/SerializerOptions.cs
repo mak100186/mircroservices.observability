@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -6,7 +6,7 @@ namespace Extensions;
 
 public static class SerializerOptions
 {
-    public static JsonSerializerOptions DefaultSerializerOptions = new(JsonSerializerDefaults.Web)
+    public static readonly JsonSerializerOptions DefaultSerializerOptions = new(JsonSerializerDefaults.Web)
     {
         Converters = { new DateOnlyConverter(), new JsonStringEnumConverter() },
         PropertyNameCaseInsensitive = true,
