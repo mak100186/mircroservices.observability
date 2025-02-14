@@ -54,6 +54,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Enrichment", "Enrichment", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.Enrichment", "src\Microservice.Enrichment\Microservice.Enrichment.csproj", "{8F493994-AF21-FEEB-3655-2224A0DC9585}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FBD5A8A1-48A3-4296-9646-9528C0F8CCCA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SmokeTests", "SmokeTests", "{94EF63E6-2DAE-4B44-909E-F8AEE561FCF5}"
+	ProjectSection(SolutionItems) = preProject
+		tests\SmokeTests\Feed.Generator.One.http = tests\SmokeTests\Feed.Generator.One.http
+		tests\SmokeTests\Feed.Generator.Two.http = tests\SmokeTests\Feed.Generator.Two.http
+		tests\SmokeTests\Microservice.Aggregation.http = tests\SmokeTests\Microservice.Aggregation.http
+		tests\SmokeTests\Microservice.Enrichment.http = tests\SmokeTests\Microservice.Enrichment.http
+		tests\SmokeTests\Microservice.One.Converter.http = tests\SmokeTests\Microservice.One.Converter.http
+		tests\SmokeTests\Microservice.One.Receiver.http = tests\SmokeTests\Microservice.One.Receiver.http
+		tests\SmokeTests\Microservice.Presenter.http = tests\SmokeTests\Microservice.Presenter.http
+		tests\SmokeTests\Microservice.Two.Converter.http = tests\SmokeTests\Microservice.Two.Converter.http
+		tests\SmokeTests\Microservice.Two.Receiver.http = tests\SmokeTests\Microservice.Two.Receiver.http
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +160,7 @@ Global
 		{FAF141EE-BA3A-380E-C783-66CC64C66972} = {2F854F40-55E1-46EE-9D0F-CDC7D680B886}
 		{0272B4EA-3203-9888-D7A3-5A989EB8A138} = {2F854F40-55E1-46EE-9D0F-CDC7D680B886}
 		{8F493994-AF21-FEEB-3655-2224A0DC9585} = {7CD6DB55-15F7-4463-8600-0D7E6B53F9CC}
+		{94EF63E6-2DAE-4B44-909E-F8AEE561FCF5} = {FBD5A8A1-48A3-4296-9646-9528C0F8CCCA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {228A7B55-64BA-4F40-B671-E94B88320121}

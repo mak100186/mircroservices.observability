@@ -225,4 +225,4 @@ I --> H
 23. UUIDv7 for the ids.
 24. Use StringSyntax for better developer experience.
 25. AOT for the services.
-
+26. Replication for the services.

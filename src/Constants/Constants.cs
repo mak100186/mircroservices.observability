@@ -2,6 +2,7 @@ namespace Constants;
 
 public static class Constants
 {
+    public const int NumberOfDaysOfWeatherForecast = 5;
     public static class Kafka
     {
         public const string ConnectionName = "kafka-server";

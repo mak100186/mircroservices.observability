@@ -30,11 +30,13 @@ var aggregator = builder.AddProject<Projects.Microservice_Aggregation>("microser
     .WaitFor(postgresdb)
     .WaitForCompletion(migrationRunner);
 
+//Enrichment
 var enricher = builder.AddProject<Projects.Microservice_Enrichment>("microservice-enrichment")
     .WithSwaggerUI()
     .WithReDoc()
     .WithScalar();
 
+//Presenter
 builder.AddProject<Projects.Microservice_Presenter>("microservice-presenter")
     .WithReference(postgres)
     .WithReference(postgresdb)

@@ -1,0 +1,25 @@
+@Feed.Generator_HostAddress = http://localhost:5023
+
+GET {{Feed.Generator_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{Feed.Generator_HostAddress}}/weatherreport/
+Accept: application/json
+
+###
+
+GET {{Feed.Generator_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{Feed.Generator_HostAddress}}/health
+Accept: application/json
+
+
+###
+
+GET {{Feed.Generator_HostAddress}}/alive
+Accept: application/json

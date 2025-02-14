@@ -1,12 +1,14 @@
-﻿using Models;
+using Models;
+
+using static Constants.Constants;
 
 namespace Extensions.Endpoints;
 
 public static class Endpoints
 {
-    public static Delegate GetWeatherForecast => () => GetWeatherForecastForRange(1, 5);
+    public static Delegate GetWeatherForecast => () => GetWeatherForecastForRange(1, NumberOfDaysOfWeatherForecast);
 
-    public static Delegate GetWeatherReport => () => GetWeatherForecastForRange(0, 5);
+    public static Delegate GetWeatherReport => () => GetWeatherForecastForRange(1 - NumberOfDaysOfWeatherForecast, NumberOfDaysOfWeatherForecast);
 
 
     private static readonly string[] Cities =
