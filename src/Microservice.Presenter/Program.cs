@@ -26,7 +26,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.UseWebDefaultsWithOpenApi(false);
+        app.UseWebDefaultsWithOpenApi("Microservice.Presenter");
 
         app.MapGet("/weatherforecast", Endpoints.GetWeatherForecast)
             .WithName("GetWeatherForecast");

@@ -36,7 +36,8 @@ public static class Extensions
                         .AllowAnyMethod();
                 });
             })
-            .AddOpenApi();
+            .AddOpenApi()
+            .AddHttpLogging();
 
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
@@ -48,6 +49,11 @@ public static class Extensions
 
         builder.Services.ConfigureHttpClientDefaults(http =>
         {
+            http.ConfigureHttpClient(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(30);
+            });
+
             // Turn on resilience by default
             http.AddStandardResilienceHandler();
 
@@ -149,8 +155,10 @@ public static class Extensions
         return app;
     }
 
-    public static WebApplication UseWebDefaultsWithOpenApi(this WebApplication app, bool useHttpsRedirection = true)
+    public static WebApplication UseWebDefaultsWithOpenApi(this WebApplication app, string applicationName)
     {
+        app.UseHttpLogging();
+
         app.UseCors("AnyOrigin");
 
         app.MapDefaultEndpoints();
@@ -162,7 +170,7 @@ public static class Extensions
 
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/openapi/v1.json", "Microservice Aggregation API");
+                options.SwaggerEndpoint("/openapi/v1.json", applicationName);
             });
 
             app.UseReDoc(options =>
@@ -173,11 +181,7 @@ public static class Extensions
             app.MapScalarApiReference();
         }
 
-        if (useHttpsRedirection)
-        {
-            app.UseHttpsRedirection();
-
-        }
+        app.UseHttpsRedirection();
 
         return app;
     }

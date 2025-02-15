@@ -12,7 +12,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.UseWebDefaultsWithOpenApi();
+        app.UseWebDefaultsWithOpenApi("Microservice.Enrichment");
 
         app.MapGet("/getCelsius", Endpoints.GetCelsius)
             .WithName("GetCelsius");

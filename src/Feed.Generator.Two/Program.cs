@@ -13,7 +13,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.UseWebDefaultsWithOpenApi();
+        app.UseWebDefaultsWithOpenApi("Feed.Generator.Two");
 
         app.MapGet("/weatherforecast", Endpoints.GetWeatherForecast)
             .WithName("GetWeatherForecast");
