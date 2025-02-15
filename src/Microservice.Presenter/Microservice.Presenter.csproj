@@ -7,6 +7,7 @@
 		<UserSecretsId>65ffdc07-269a-422b-9b03-6f520b9d7c72</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerfileContext>..\..</DockerfileContext>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

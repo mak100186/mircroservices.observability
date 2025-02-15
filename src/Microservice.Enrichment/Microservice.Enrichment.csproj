@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>635e7bda-283d-426c-9dba-38fa46835536</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Extensions\Extensions.csproj" />
     <ProjectReference Include="..\Microservices.Observability.ServiceDefaults\Microservices.Observability.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Data\cities.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

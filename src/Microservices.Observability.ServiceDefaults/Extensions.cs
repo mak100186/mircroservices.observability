@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.OpenApi.Models;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -18,7 +19,7 @@ namespace Microservices.Observability.ServiceDefaults;
 // To learn more about using this project, see https://aka.ms/dotnet/aspire/service-defaults
 public static class Extensions
 {
-    public static IServiceCollection AddWebDefaults(this IServiceCollection services) => services
+    public static IServiceCollection AddWebDefaults(this IServiceCollection services, IConfiguration configuration) => services
             .ConfigureHttpJsonOptions(options =>
             {
                 options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -37,6 +38,7 @@ public static class Extensions
                 });
             })
             .AddOpenApi()
+            .AddSwagger(configuration)
             .AddHttpLogging();
 
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
@@ -67,7 +69,7 @@ public static class Extensions
         //     options.AllowedSchemes = ["https"];
         // });
 
-        builder.Services.AddWebDefaults();
+        builder.Services.AddWebDefaults(builder.Configuration);
 
         return builder;
     }
@@ -168,9 +170,19 @@ public static class Extensions
         {
             app.MapOpenApi();
 
+            app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/openapi/v1.json", applicationName);
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger UI Modified");
+                if (bool.Parse(string.IsNullOrWhiteSpace(app.Configuration["CustomSwaggerUi:Personalised"]) ? "false" : app.Configuration["CustomSwaggerUi:Personalised"]!))
+                {
+                    options.DocumentTitle = app.Configuration["CustomSwaggerUi:DocTitle"];
+                    options.HeadContent = app.Configuration["CustomSwaggerUi:HeaderImg"] ?? options.HeadContent;
+                    options.InjectStylesheet(app.Configuration["CustomSwaggerUi:PathCss"]);
+                }
+
+                options.DisplayRequestDuration();
+
             });
 
             app.UseReDoc(options =>
@@ -183,6 +195,43 @@ public static class Extensions
 
         app.UseHttpsRedirection();
 
+        app.UseStaticFiles();
+
         return app;
     }
+
+    public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
+    {
+        var httpsPort = configuration["HTTPS_PORT"];
+        var baseUrl = $"https://localhost:{httpsPort}";
+
+        services.AddSwaggerGen(c =>
+        {
+            // Created the Swagger document
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "Version 1.0.0",
+                Title = "",
+                Description = "Swagger UI Personalized using .Net 9",
+                Contact = new OpenApiContact
+                {
+                    Name = "OpenApi schema",
+                    Url = new Uri($"{baseUrl}/openapi/v1.json")
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "Swagger schema",
+                    Url = new Uri($"{baseUrl}/swagger/v1/swagger.json")
+                }
+            });
+
+            // form 2 to generate the swagger documentation
+            foreach (var name in Directory.GetFiles(AppContext.BaseDirectory, "*.XML", SearchOption.TopDirectoryOnly))
+            {
+                c.IncludeXmlComments(filePath: name);
+            }
+        });
+
+        return services;
+    } // end method AddSwagger
 }

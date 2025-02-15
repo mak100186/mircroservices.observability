@@ -25,7 +25,23 @@
       },
       "publishAllPorts": true,
       "useSSL": true
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:44351/swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   },
-  "$schema": "https://json.schemastore.org/launchsettings.json"
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:59661/",
+      "sslPort": 44351
+    }
+  }
 }

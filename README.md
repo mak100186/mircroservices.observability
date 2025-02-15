@@ -194,7 +194,8 @@ I --> H
     3. add descriptions;
     4. add links to schemas;
 5. Add schemas to dashboard using commands and provide button on swagger page as well, use the recent short from Nick about it. 
-6. Log improvements.
+6. Log improvements:
+    - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0#http-logging-options
 7. Parallel processing in the conerter and aggregation service.
 8. More functional programming and pattern matching in the services.
 9. Add custom metrics to the services.
@@ -217,7 +218,9 @@ I --> H
 15. Add interceptors for dbcontext.
 16. Add interceptors for httpclient.
 17. Add interceptors for kafka producer and consumer.
-18. Add trace id or correlation id to the messages.
+18. Add trace id or correlation id to the messages. Use header propoagation
+    - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0#http-logging-options
+    - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-9.0#header-propagation-middleware
 19. Add Upsert query for the database. Use the one created at work and improve it.
 20. Using interporlated string library as an alternative to regex ref: InterpolatedParser.
 21. Validations for naugthy strings. ref: NaughtyStrings.
