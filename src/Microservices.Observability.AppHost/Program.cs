@@ -48,37 +48,45 @@ builder.AddProject<Projects.Microservice_Presenter>("microservice-presenter")
     .WithScalar();
 
 //Cluster 1
-builder.AddProject<Projects.Feed_Generator_One>("feed-generator-one")
+{
+    var feedGenOne = builder.AddProject<Projects.Feed_Generator_One>("feed-generator-one")
     .WithSwaggerUI()
     .WithReDoc()
     .WithScalar();
 
-var oneConverter = builder.AddProject<Projects.Microservice_One_Converter>("microservice-one-converter")
-    .WithReference(messaging)
-    .WaitFor(messaging)
-    .WaitFor(aggregator);
+    var oneConverter = builder.AddProject<Projects.Microservice_One_Converter>("microservice-one-converter")
+        .WithReference(messaging)
+        .WaitFor(messaging)
+        .WaitFor(aggregator);
 
-builder.AddProject<Projects.Microservice_One_Receiver>("microservice-one-receiver")
-    .WithReference(messaging)
-    .WaitFor(messaging)
-    .WaitFor(aggregator)
-    .WaitFor(oneConverter);
+    builder.AddProject<Projects.Microservice_One_Receiver>("microservice-one-receiver")
+        .WithReference(messaging)
+        .WaitFor(messaging)
+        .WithReference(feedGenOne)
+        .WaitFor(feedGenOne)
+        .WaitFor(aggregator)
+        .WaitFor(oneConverter);
+}
 
 //Cluster 2
-builder.AddProject<Projects.Feed_Generator_Two>("feed-generator-two")
+{
+    var feedGenTwo = builder.AddProject<Projects.Feed_Generator_Two>("feed-generator-two")
     .WithSwaggerUI()
     .WithReDoc()
     .WithScalar();
 
-var twoConverter = builder.AddProject<Projects.Microservice_Two_Converter>("microservice-two-converter")
-    .WithReference(messaging)
-    .WaitFor(messaging)
-    .WaitFor(aggregator);
+    var twoConverter = builder.AddProject<Projects.Microservice_Two_Converter>("microservice-two-converter")
+        .WithReference(messaging)
+        .WaitFor(messaging)
+        .WaitFor(aggregator);
 
-builder.AddProject<Projects.Microservice_Two_Receiver>("microservice-two-receiver")
-    .WithReference(messaging)
-    .WaitFor(messaging)
-    .WaitFor(aggregator)
-    .WaitFor(twoConverter);
+    builder.AddProject<Projects.Microservice_Two_Receiver>("microservice-two-receiver")
+        .WithReference(messaging)
+        .WaitFor(messaging)
+        .WithReference(feedGenTwo)
+        .WaitFor(feedGenTwo)
+        .WaitFor(aggregator)
+        .WaitFor(twoConverter);
+}
 
 builder.Build().Run();

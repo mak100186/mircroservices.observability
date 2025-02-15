@@ -24,6 +24,10 @@ public class Program
 
         builder.Services.AddOptions<ClientOptions>()
             .Bind(builder.Configuration.GetSection(ClientOptions.ClientsSectionName))
+            .Configure(options =>
+            {
+                options.BaseUrl = builder.Configuration["services:feed-generator-one:http:0"]!;
+            })
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
