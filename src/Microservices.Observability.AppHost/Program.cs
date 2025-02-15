@@ -7,12 +7,13 @@ var messaging = builder.AddKafka(name: "messaging", 9092)
     .WithDataVolume(isReadOnly: false)
     .WithLifetime(ContainerLifetime.Persistent);
 
-//Aggregator
 var postgres = builder.AddPostgres("postgres", port: 5432)
     .WithPgAdmin(pgAdmin => pgAdmin.WithHostPort(5050).WithLifetime(ContainerLifetime.Persistent))
     .WithPgWeb(pgWeb => pgWeb.WithLifetime(ContainerLifetime.Persistent))
     .WithDataVolume(isReadOnly: false)
     .WithLifetime(ContainerLifetime.Persistent);
+
+//Aggregator
 
 var postgresdb = postgres.AddDatabase("postgresdb", "aggregation-persistence");
 
@@ -25,7 +26,6 @@ var aggregator = builder.AddProject<Projects.Microservice_Aggregation>("microser
     .WithReference(messaging)
     .WithReference(postgres)
     .WithReference(postgresdb)
-    .WithReference(migrationRunner)
     .WaitFor(messaging)
     .WaitFor(postgresdb)
     .WaitForCompletion(migrationRunner);
@@ -40,7 +40,6 @@ var enricher = builder.AddProject<Projects.Microservice_Enrichment>("microservic
 builder.AddProject<Projects.Microservice_Presenter>("microservice-presenter")
     .WithReference(postgres)
     .WithReference(postgresdb)
-    .WithReference(migrationRunner)
     .WaitFor(enricher)
     .WaitFor(postgresdb)
     .WaitForCompletion(migrationRunner)
@@ -54,17 +53,16 @@ builder.AddProject<Projects.Feed_Generator_One>("feed-generator-one")
     .WithReDoc()
     .WithScalar();
 
-builder.AddProject<Projects.Microservice_One_Receiver>("microservice-one-receiver")
+var oneConverter = builder.AddProject<Projects.Microservice_One_Converter>("microservice-one-converter")
     .WithReference(messaging)
-    .WithReference(aggregator)
     .WaitFor(messaging)
     .WaitFor(aggregator);
 
-builder.AddProject<Projects.Microservice_One_Converter>("microservice-one-converter")
+builder.AddProject<Projects.Microservice_One_Receiver>("microservice-one-receiver")
     .WithReference(messaging)
-    .WithReference(aggregator)
     .WaitFor(messaging)
-    .WaitFor(aggregator);
+    .WaitFor(aggregator)
+    .WaitFor(oneConverter);
 
 //Cluster 2
 builder.AddProject<Projects.Feed_Generator_Two>("feed-generator-two")
@@ -72,26 +70,15 @@ builder.AddProject<Projects.Feed_Generator_Two>("feed-generator-two")
     .WithReDoc()
     .WithScalar();
 
+var twoConverter = builder.AddProject<Projects.Microservice_Two_Converter>("microservice-two-converter")
+    .WithReference(messaging)
+    .WaitFor(messaging)
+    .WaitFor(aggregator);
+
 builder.AddProject<Projects.Microservice_Two_Receiver>("microservice-two-receiver")
     .WithReference(messaging)
-    .WithReference(aggregator)
     .WaitFor(messaging)
-    .WaitFor(aggregator);
-
-builder.AddProject<Projects.Microservice_Two_Converter>("microservice-two-converter")
-    .WithReference(messaging)
-    .WithReference(aggregator)
-    .WaitFor(messaging)
-    .WaitFor(aggregator);
-
-
-
-
-
-
-
-
-
-
+    .WaitFor(aggregator)
+    .WaitFor(twoConverter);
 
 builder.Build().Run();

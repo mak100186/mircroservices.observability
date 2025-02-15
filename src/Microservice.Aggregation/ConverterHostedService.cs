@@ -28,7 +28,7 @@ internal sealed class ConverterHostedService(IConsumer<string, AggregatedWeather
                         logger.LogInformation("RX: {TopicPartitionOffset}: {Value}", consumeResult.TopicPartitionOffset, consumeResult.Message.Value);
                         if (consumeResult.IsPartitionEOF)
                         {
-                            logger.LogInformation("Reached end of topic {Topic}, {Partition}, {Offset}.", consumeResult.Topic, consumeResult.Partition, consumeResult.Offset);
+                            logger.LogInformation("EOF: {Topic}, {Partition}, {Offset}.", consumeResult.Topic, consumeResult.Partition, consumeResult.Offset);
                             continue;
                         }
 
@@ -61,18 +61,6 @@ internal sealed class ConverterHostedService(IConsumer<string, AggregatedWeather
         var dbContext = scope.ServiceProvider.GetRequiredService<AggregationContext>();
 
         var aggregatedWeatherForecast = deliveryResult.Message.Value;
-
-        if (aggregatedWeatherForecast is null)
-        {
-            logger.LogWarning("Received null weather forecast.");
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(aggregatedWeatherForecast.City))
-        {
-            logger.LogWarning("Received empty city for weather forecast.");
-            return;
-        }
 
         var existingWeatherForecast = dbContext.WeatherForecasts
                                         .FirstOrDefault(x =>

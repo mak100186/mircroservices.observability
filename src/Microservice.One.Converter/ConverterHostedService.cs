@@ -27,7 +27,7 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> consume
                         logger.LogInformation("RX: {TopicPartitionOffset}: {Value}", consumeResult.TopicPartitionOffset, consumeResult.Message.Value);
                         if (consumeResult.IsPartitionEOF)
                         {
-                            logger.LogInformation("Reached end of topic {Topic}, {Partition}, {Offset}.", consumeResult.Topic, consumeResult.Partition, consumeResult.Offset);
+                            logger.LogInformation("EOF: {Topic}, {Partition}, {Offset}.", consumeResult.Topic, consumeResult.Partition, consumeResult.Offset);
                             continue;
                         }
 
@@ -58,19 +58,6 @@ internal class ConverterHostedService(IConsumer<string, WeatherForecast> consume
     {
         var city = deliveryResult.Message.Key;
         var weatherForecast = deliveryResult.Message.Value;
-
-        if (string.IsNullOrWhiteSpace(city))
-        {
-            logger.LogWarning("Received empty city for weather forecast.");
-            return;
-        }
-
-        if (weatherForecast is null)
-        {
-            logger.LogWarning("Received null weather forecast for city {City}.", city);
-            return;
-        }
-
 
         await producer.ProduceAsync(TopicNames.OneConverterAggregator,
             new Message<string, AggregatedWeatherForecast>
