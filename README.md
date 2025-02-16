@@ -205,12 +205,8 @@ I --> DB
 1. Presenter should use hybrid cache with redis for country data instead of calling enricher. 
     1. explore ResponseCaching;
     2. explore OutputCache;
-2. Add exception handling and visitor pattern for it.
-    - https://medium.com/@vosarat1995/exception-handling-in-asp-net-core-9fded06f8ec1
 5. Add schemas to dashboard using commands and provide button on swagger page as well, use the recent short from Nick about it. 
     - https://www.youtube.com/shorts/f-1iAm3hloo
-6. Log improvements:
-    - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0#http-logging-options
 7. Parallel processing in the conerter and aggregation service.
 8. More functional programming and pattern matching in the services.
 10. Add grafana dashboards for the services.

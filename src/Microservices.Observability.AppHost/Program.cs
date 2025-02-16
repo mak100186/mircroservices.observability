@@ -1,6 +1,8 @@
+using Aspire.Hosting.Lifecycle;
 using Microservices.Observability.AppHost;
 
 var builder = DistributedApplication.CreateBuilder(args);
+builder.Services.AddLifecycleHook<LifecycleLogger>();
 
 var messaging = builder.AddKafka(name: "messaging", 9092)
     .WithKafkaUI(kafkaUI => kafkaUI.WithHostPort(9100).WithLifetime(ContainerLifetime.Persistent))
@@ -14,7 +16,6 @@ var postgres = builder.AddPostgres("postgres", port: 5432)
     .WithLifetime(ContainerLifetime.Persistent);
 
 //Aggregator
-
 var postgresdb = postgres.AddDatabase("postgresdb", "aggregation-persistence");
 
 var migrationRunner = builder.AddProject<Projects.Microservice_Aggregation_MigrationRunner>("migrationrunner")

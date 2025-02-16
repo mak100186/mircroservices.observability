@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Extensions;
+using Models;
 
 namespace Microservice.Enrichment;
 
