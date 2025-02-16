@@ -64,7 +64,7 @@ public static class Extensions
     public static TBuilder AddServiceDefaultsWithOpenApi<TBuilder>(this TBuilder builder, Type[] additionalTypes) where TBuilder : IHostApplicationBuilder
     {
         builder
-            .ConfigureCustomisedSwagger(additionalTypes);
+            .ConfigureCustomizedSwagger(additionalTypes);
 
         builder.Services
             .AddOpenApi(options => options.AddDocumentTransformer(new DefaultEndpointTransformer(additionalTypes)));
@@ -113,7 +113,7 @@ public static class Extensions
         {
             app.MapOpenApi();
 
-            app.UseCustomisedSwagger();
+            app.UseCustomizedSwagger();
 
             app.UseReDoc(options =>
             {
@@ -128,5 +128,5 @@ public static class Extensions
         return app;
     }
 
-    
+
 }

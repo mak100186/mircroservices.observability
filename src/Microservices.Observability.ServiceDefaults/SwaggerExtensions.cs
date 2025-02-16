@@ -7,7 +7,7 @@ namespace Microservices.Observability.ServiceDefaults;
 
 public static class SwaggerExtensions
 {
-    public static TBuilder ConfigureCustomisedSwagger<TBuilder>(this TBuilder builder, Type[] additionalTypes) where TBuilder : IHostApplicationBuilder
+    public static TBuilder ConfigureCustomizedSwagger<TBuilder>(this TBuilder builder, Type[] additionalTypes) where TBuilder : IHostApplicationBuilder
     {
         var httpsPort = builder.Configuration["HTTPS_PORT"];
         var baseUrl = $"https://localhost:{httpsPort}";
@@ -42,12 +42,12 @@ public static class SwaggerExtensions
         return builder;
     }
 
-    public static void UseCustomisedSwagger(this WebApplication app)
+    public static void UseCustomizedSwagger(this WebApplication app)
     {
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
-            if (bool.Parse(app.Configuration.GetValueOrDefault("CustomSwaggerUi:Personalised", "false")))
+            if (bool.Parse(app.Configuration.GetValueOrDefault("CustomSwaggerUi:Personalized", "false")))
             {
                 options.DocumentTitle = app.Configuration["CustomSwaggerUi:DocTitle"];
                 options.HeadContent = app.Configuration["CustomSwaggerUi:HeaderImg"] ?? options.HeadContent;

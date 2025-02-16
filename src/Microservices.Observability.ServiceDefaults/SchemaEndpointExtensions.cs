@@ -26,7 +26,6 @@ public static class SchemaEndpointExtensions
     }
 }
 
-
 public class DefaultEndpointFilter(Type[] additionalTypes) : IDocumentFilter
 {
     public void Apply(OpenApiDocument document, DocumentFilterContext context)

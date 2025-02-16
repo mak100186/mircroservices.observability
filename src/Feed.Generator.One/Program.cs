@@ -18,10 +18,10 @@ public class Program
 
         app.UseWebDefaultsWithOpenApi();
 
-        app.MapGet("/weatherforecast", Endpoints.GetWeatherForecast)
+        app.MapGet("/weatherForecast", Endpoints.GetWeatherForecast)
             .WithName("GetWeatherForecast");
 
-        app.MapGet("/weatherreport", Endpoints.GetWeatherReport)
+        app.MapGet("/weatherReport", Endpoints.GetWeatherReport)
             .WithName("GetWeatherReport");
 
         app.MapSchemaEndpoints(typesForSchemaEndpoint);
