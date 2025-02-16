@@ -12,19 +12,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.AddServiceDefaultsWithOpenApi();
+        builder.AddServiceDefaults();
 
         builder.Services.AddHostedService<MigrationsRunner>();
-
-        //do i need this line? its already getting done in service defaults
-        builder.Services.AddOpenTelemetry()
-            .WithTracing(tracing => tracing.AddSource(nameof(MigrationsRunner)));
 
         builder.AddNpgsqlDbContext<AggregationContext>(Postgres.ConnectionName);
 
         var app = builder.Build();
-
-        app.UseHttpsRedirection();
 
         app.Run();
     }

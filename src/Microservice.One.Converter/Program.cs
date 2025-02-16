@@ -17,7 +17,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.AddServiceDefaultsWithOpenApi();
+        builder.AddServiceDefaults();
 
         builder.AddKafkaConsumer<string, WeatherForecast>(Kafka.ConnectionName, options =>
         {

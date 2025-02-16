@@ -1,5 +1,6 @@
 using Microservices.Observability.ServiceDefaults;
 using Microsoft.AspNetCore.Mvc;
+using Models.Exceptions;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -48,4 +49,6 @@ public static class Endpoints
             weatherMetrics.IncrementEnricherRequestCounter();
         }
     }
+
+    public static IResult GetWrongInputResponse(string input) => throw new WrongInputException(input);
 }

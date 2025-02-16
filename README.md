@@ -229,7 +229,7 @@ I --> DB
     11. architecture tests for the services. ref: ArchUnit.NET.
 13. Add validations for options. 
 14. Client side validation of received kafka messages.
-15. Add interceptors for dbcontext.
+15. Add interceptors for dbcontext. Add createdOn and updatedOn for each weather update by the feedsource
 16. Add interceptors for httpclient.
 17. Add interceptors for kafka producer and consumer.
 18. Add trace id or correlation id to the messages. Use header propoagation

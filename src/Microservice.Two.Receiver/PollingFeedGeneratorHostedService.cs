@@ -41,20 +41,22 @@ internal sealed class PollingFeedGeneratorHostedService(FeedTwoClient feedTwoCli
 
     private async Task PollClient(CancellationToken cancellationToken)
     {
-        var weatherReport = await feedTwoClient.GetWeatherReport(cancellationToken);
+        var weatherReport = feedTwoClient.GetWeatherReport(cancellationToken);
 
-        var weatherForecast = await feedTwoClient.GetWeatherForecast(cancellationToken);
+        var weatherForecast = feedTwoClient.GetWeatherForecast(cancellationToken);
 
-        var mergedResult = Result.Merge(weatherReport, weatherForecast);
+        var results = await Task.WhenAll(weatherReport, weatherForecast);
+
+        var mergedResult = results.Merge();
 
         if (mergedResult.IsFailed)
         {
-            logger.LogError("Failed to get data from the client. {Errors}", weatherReport.GetErrors());
+            logger.LogError("Failed to get data from the client. {Errors}", mergedResult.GetErrors());
 
             return;
         }
 
-        var combinedWeathers = weatherReport.Value.CitiesWeatherForecast.Concat(weatherForecast.Value.CitiesWeatherForecast);
+        var combinedWeathers = mergedResult.Value.SelectMany(x => x.CitiesWeatherForecast).ToList();
 
         foreach (var cityWeather in combinedWeathers)
         {

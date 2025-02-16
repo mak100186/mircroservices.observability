@@ -1,6 +1,6 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using static Models.Exceptions.ProblemDetailsExceptionEnricher;
+using Models.Exceptions;
 
 namespace Microservices.Observability.ServiceDefaults;
 
