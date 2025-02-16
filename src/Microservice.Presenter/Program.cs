@@ -12,7 +12,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.AddServiceDefaults();
+        builder.AddServiceDefaultsWithOpenApi();
 
         builder.AddNpgsqlDbContext<AggregationContext>(Postgres.ConnectionName);
 
@@ -26,7 +26,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.UseWebDefaultsWithOpenApi("Microservice.Presenter");
+        app.UseWebDefaultsWithOpenApi();
 
         app.MapGet("/weatherforecast", Endpoints.GetWeatherForecast)
             .WithName("GetWeatherForecast");

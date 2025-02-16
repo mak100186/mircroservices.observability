@@ -9,11 +9,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.AddServiceDefaults();
+        builder.AddServiceDefaultsWithOpenApi();
 
         var app = builder.Build();
 
-        app.UseWebDefaultsWithOpenApi("Feed.Generator.One");
+        app.UseWebDefaultsWithOpenApi();
 
         app.MapGet("/weatherforecast", Endpoints.GetWeatherForecast)
             .WithName("GetWeatherForecast");

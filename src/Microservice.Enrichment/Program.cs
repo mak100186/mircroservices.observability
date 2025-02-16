@@ -1,4 +1,5 @@
 using Microservices.Observability.ServiceDefaults;
+using static Models.Exceptions.ProblemDetailsExceptionEnricher;
 
 namespace Microservice.Enrichment;
 
@@ -8,11 +9,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.AddServiceDefaults();
+        builder.AddServiceDefaultsWithOpenApi();
 
         var app = builder.Build();
 
-        app.UseWebDefaultsWithOpenApi("Microservice.Enrichment");
+        app.UseWebDefaultsWithOpenApi();
 
         app.MapGet("/getCelsius", Endpoints.GetCelsius)
             .WithName("GetCelsius");
@@ -22,6 +23,11 @@ public class Program
 
         app.MapGet("/getCityDetails", Endpoints.GetCityDetails)
             .WithName("GetCityDetails");
+
+        app.MapGet("/wrong-input/{input}", (string input) =>
+        {
+            throw new WrongInputException(input);
+        });
 
         //initialize the lazy loading of the cities
         CityRepository.GetCityByName("-");

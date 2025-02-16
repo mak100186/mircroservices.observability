@@ -12,7 +12,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.AddServiceDefaults();
+        builder.AddServiceDefaultsWithOpenApi();
 
         builder.Services.AddHostedService<MigrationsRunner>();
 
