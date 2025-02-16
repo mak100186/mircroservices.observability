@@ -8,7 +8,8 @@ var cache = builder.AddRedis("cache")
     .WithDataVolume(isReadOnly: false)
     .WithPersistence(interval: TimeSpan.FromMinutes(5), keysChangedThreshold: 100)
     .WithRedisInsight(insight => insight.WithLifetime(ContainerLifetime.Persistent))
-    .WithRedisCommander(commander => commander.WithLifetime(ContainerLifetime.Persistent));
+    .WithRedisCommander(commander => commander.WithLifetime(ContainerLifetime.Persistent))
+    .WithLifetime(ContainerLifetime.Persistent);
 
 var messaging = builder.AddKafka(name: "kafka-server")
     .WithKafkaUI(kafkaUI => kafkaUI.WithLifetime(ContainerLifetime.Persistent))

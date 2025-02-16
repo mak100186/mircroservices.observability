@@ -162,6 +162,7 @@ I --> DB
     - Passing reference to the containers;
 - Learn to use metrics, logging, tracing, and health checks for observability.
 - Documenting the system architecture using mermaid diagrams.
+- Dynamic port assignment for the services and passing the connnecting ports to the services.
 - Use result pattern for better error handling and logging. ref: FluentResults.
 - Using System.Text.Json for serialization and deserialization.
     - Custom converters for better serialization and deserialization.
@@ -201,13 +202,18 @@ I --> DB
 
     ![HistogramWithExemplars](./docs/imgs/metrics_histogram.png)
 
+- Schema endpoints: expose json schema endpoints for OpenApi and SwaggerDoc.
+    - Added schema endpoints for OpenApi and SwaggerDoc to provide additional information about the API schema. This can be useful for generating client code or documentation based on the API schema.
+    ![SchemaEndpoints](./docs/imgs/schema_endpoint.png)
+    - The schema is json formatted and can be used to generate client code or documentation based on the API schema.
+    ![SchemaEndpoints](./docs/imgs/schema_response.png)
+
+- Output cache: cache the response of the API for a specified duration.
+    - Added output caching to the API to cache the response for a specified duration. This can improve performance by reducing the number of requests to the server and providing faster responses to clients.
+    ![OutputCache](./docs/imgs/cache_trace.png)
+
 # Upcoming Improvements
-1. Presenter should use hybrid cache with redis for country data instead of calling enricher. 
-    1. explore ResponseCaching;
-    2. explore OutputCache;
-5. Add schemas to dashboard using commands and provide button on swagger page as well, use the recent short from Nick about it. 
-    - https://www.youtube.com/shorts/f-1iAm3hloo
-7. Parallel processing in the conerter and aggregation service.
+1. Parallel processing in the conerter and aggregation service.
 8. More functional programming and pattern matching in the services.
 10. Add grafana dashboards for the services.
 11. Default and Custom health checks for the services and dependencies.

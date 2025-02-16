@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -7,7 +7,7 @@ namespace Microservices.Observability.ServiceDefaults;
 
 public static class SwaggerExtensions
 {
-    public static TBuilder ConfigureCustomisedSwagger<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    public static TBuilder ConfigureCustomisedSwagger<TBuilder>(this TBuilder builder, Type[] additionalTypes) where TBuilder : IHostApplicationBuilder
     {
         var httpsPort = builder.Configuration["HTTPS_PORT"];
         var baseUrl = $"https://localhost:{httpsPort}";
@@ -30,6 +30,8 @@ public static class SwaggerExtensions
                     Url = new Uri($"{baseUrl}/swagger/v1/swagger.json")
                 }
             });
+
+            c.AddDocumentFilterInstance(new DefaultEndpointFilter(additionalTypes));
 
             foreach (var name in Directory.GetFiles(AppContext.BaseDirectory, "*.XML", SearchOption.TopDirectoryOnly))
             {

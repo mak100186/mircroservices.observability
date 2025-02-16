@@ -11,8 +11,10 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Type[] typesForSchemaEndpoint = [typeof(AggregatedWeatherForecastResponse)];
+
         var builder = WebApplication.CreateBuilder(args);
-        builder.AddServiceDefaultsWithOpenApi();
+        builder.AddServiceDefaultsWithOpenApi(typesForSchemaEndpoint);
 
         builder.AddNpgsqlDbContext<AggregationContext>(Postgres.ConnectionName);
 
@@ -30,6 +32,8 @@ public class Program
 
         app.MapGet("/weatherforecast", Endpoints.GetWeatherForecast)
             .WithName("GetWeatherForecast");
+
+        app.MapSchemaEndpoints(typesForSchemaEndpoint);
 
         app.Run();
     }

@@ -1,4 +1,5 @@
 using Microservices.Observability.ServiceDefaults;
+using Models;
 
 namespace Microservice.Enrichment;
 
@@ -6,9 +7,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Type[] typesForSchemaEndpoint = [typeof(CityDetailsResponse)];
+
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.AddServiceDefaultsWithOpenApi();
+        builder.AddServiceDefaultsWithOpenApi(typesForSchemaEndpoint);
 
         builder.AddRedisOutputCache("cache");
 
@@ -30,6 +33,8 @@ public class Program
 
         app.MapGet("/getWrongInputResponse/{input}", Endpoints.GetWrongInputResponse)
             .WithName("GetWrongInputResponse");
+
+        app.MapSchemaEndpoints(typesForSchemaEndpoint);
 
         //initialize the lazy loading of the cities
         CityRepository.GetCityByName("-");

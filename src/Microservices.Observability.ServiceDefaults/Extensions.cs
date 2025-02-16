@@ -61,13 +61,13 @@ public static class Extensions
             .AddDefaultHealthChecks();
     }
 
-    public static TBuilder AddServiceDefaultsWithOpenApi<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    public static TBuilder AddServiceDefaultsWithOpenApi<TBuilder>(this TBuilder builder, Type[] additionalTypes) where TBuilder : IHostApplicationBuilder
     {
         builder
-            .ConfigureCustomisedSwagger();
+            .ConfigureCustomisedSwagger(additionalTypes);
 
         builder.Services
-            .AddOpenApi();
+            .AddOpenApi(options => options.AddDocumentTransformer(new DefaultEndpointTransformer(additionalTypes)));
 
         return builder.AddServiceDefaults();
     }
@@ -128,4 +128,5 @@ public static class Extensions
         return app;
     }
 
+    
 }
