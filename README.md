@@ -68,7 +68,7 @@ graph TD
     T3 --> G
     T4 --> G
     G --> DB
-    I --> G
+    I --> DB
     I --> H
 
 ```
@@ -95,18 +95,20 @@ sequenceDiagram
     loop For each city each day
         Microservice.One.Receiver ->> One.Receiver-Converter: Push Forecast Message
     end
+
     One.Receiver-Converter ->> Microservice.One.Converter: Consume Data
     Microservice.One.Converter ->> Microservice.One.Converter: Add feedProvider Information
     Microservice.One.Converter ->> One.Converter-Aggregator: Push Processed Data
     One.Converter-Aggregator ->> Microservice.Aggregation: Consume Processed Data
     Microservice.Aggregation ->> Aggregation.Persistence: Add or Update Forecasts
-    Endpoint ->> Microservice.Aggregation: Request Forecast Data
     Microservice.Aggregation ->> Aggregation.Persistence: Query Data
     Aggregation.Persistence -->> Microservice.Aggregation: Return Data
-    Microservice.Aggregation -->> Endpoint: Return Forecast Data
-    Presenter ->> Microservice.Aggregation: Request Aggregated Data
+    
+    Presenter ->> Aggregation.Persistence: Request Aggregated Data
+    Aggregation.Persistence -->> Presenter: Return Aggregated Data    
+    
     Presenter ->> Microservice.Enrichment: Request Enriched Data
-
+    Microservice.Enrichment -->> Presenter: Return Enriched Data
 ```
 
 # Component Diagram
@@ -148,8 +150,8 @@ F --> T4
 T3 --> G
 T4 --> G
 G --> DB
-I --> G
 I --> H
+I --> DB
 ```
 
 # Learning outcomes
@@ -179,7 +181,7 @@ I --> H
     - ValueConverters for better data storage.
     - Migrations for database schema management.
     - Using Docker for containerization.
-
+- Swagger UI customisations and using the swaggerGen in .net9 
 
 
 # Upcoming Improvements
@@ -187,13 +189,11 @@ I --> H
     1. explore ResponseCaching;
     2. explore OutputCache;
 2. Add exception handling and visitor pattern for it.
-3. Add schemas for the API.
-4. Extend swagger by:
-    1. formats on the fields;
-    2. add examples;
-    3. add descriptions;
-    4. add links to schemas;
+    - https://medium.com/@vosarat1995/exception-handling-in-asp-net-core-9fded06f8ec1
+3. Deploy to kubernetes
+    - https://www.youtube.com/watch?v=E8ilDMg7Dak
 5. Add schemas to dashboard using commands and provide button on swagger page as well, use the recent short from Nick about it. 
+    - https://www.youtube.com/shorts/f-1iAm3hloo
 6. Log improvements:
     - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0#http-logging-options
 7. Parallel processing in the conerter and aggregation service.
@@ -229,3 +229,7 @@ I --> H
 24. Use StringSyntax for better developer experience.
 25. AOT for the services.
 26. Replication for the services.
+27. Add a feed provider that uses websockets
+    - https://medium.com/@vosarat1995/websockets-in-net-9-a-getting-started-guide-3ea5982d3782
+28. Add a feed provider that uses gRPC
+29. Seed database using https://www.youtube.com/watch?v=ESPp3uVmKhU
