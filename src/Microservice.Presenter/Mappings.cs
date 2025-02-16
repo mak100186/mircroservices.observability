@@ -11,7 +11,7 @@ public static class Mappings
     {
         if (temperature.Unit == TemperatureUnit.Celsius)
         {
-            return [temperature, new Temperature(await enricher.GetFarenheit(temperature.Value, cancellationToken), TemperatureUnit.Fahrenheit)];
+            return [temperature, new Temperature(await enricher.GetFahrenheit(temperature.Value, cancellationToken), TemperatureUnit.Fahrenheit)];
         }
         else
         {

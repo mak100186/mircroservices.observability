@@ -21,4 +21,19 @@ public static class Constants
         public const string OneConverterAggregator = "One.Converter-Aggregator";
         public const string TwoConverterAggregator = "Two.Converter-Aggregator";
     }
+
+    public static class ObservabilityMetrics
+    {
+        public const string MeterName = "Microservices.Observability";
+
+        public const string PresentationRequestsCount = "presentation.requests.count";
+        public const string EnricherRequestCount = "enricher.requests.count";
+        public const string PresentationRequestsDuration = "presentation.requests.duration";
+        public const string EnricherRequestsDuration = "enricher.requests.duration";
+    }
+
+    public static class Cors
+    {
+        public const string AnyOriginPolicy = "AnyOrigin";
+    }
 }

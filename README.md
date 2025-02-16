@@ -182,7 +182,24 @@ I --> DB
     - Migrations for database schema management.
     - Using Docker for containerization.
 - Swagger UI customisations and using the swaggerGen in .net9 
+    - Numerous modifications were done to the UI. 
+        1. Versioning information
+        2. Licensing information
+        3. Schema links
+        4. Header customisation and optional banner
 
+        ![SwaggerCustomUI](./docs/imgs/swagger_ui_modified.png)
+
+- Custom metrics: Counter and Histogram to monitor the services.
+    Added the following metrics that are exposed to the dashboard:
+    - enricher.requests.count: Number of requests received by Microservice.Enrichment.
+    - enricher.requests.duration: Duration of requests received by Microservice.Enrichment.
+    - presentation.requests.count: Number of requests received by Microservice.Presenter.
+    - presentation.requests.duration: Duration of requests received by Microservice.Presenter.
+
+    This shows how custom metrics can be added to monitor specific aspects of the system. They are correlated with exemplar traces to provide more context and insights into the system's performance.
+
+    ![HistogramWithExemplars](./docs/imgs/metrics_histogram.png)
 
 # Upcoming Improvements
 1. Presenter should use hybrid cache with redis for country data instead of calling enricher. 
@@ -190,15 +207,12 @@ I --> DB
     2. explore OutputCache;
 2. Add exception handling and visitor pattern for it.
     - https://medium.com/@vosarat1995/exception-handling-in-asp-net-core-9fded06f8ec1
-3. Deploy to kubernetes
-    - https://www.youtube.com/watch?v=E8ilDMg7Dak
 5. Add schemas to dashboard using commands and provide button on swagger page as well, use the recent short from Nick about it. 
     - https://www.youtube.com/shorts/f-1iAm3hloo
 6. Log improvements:
     - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0#http-logging-options
 7. Parallel processing in the conerter and aggregation service.
 8. More functional programming and pattern matching in the services.
-9. Add custom metrics to the services.
 10. Add grafana dashboards for the services.
 11. Default and Custom health checks for the services and dependencies.
 12. Add tests:
@@ -233,3 +247,8 @@ I --> DB
     - https://medium.com/@vosarat1995/websockets-in-net-9-a-getting-started-guide-3ea5982d3782
 28. Add a feed provider that uses gRPC
 29. Seed database using https://www.youtube.com/watch?v=ESPp3uVmKhU
+30. Install minkube, aspirate and deploy the services to kubernetes local cluster. Also add replication and scaling.
+    - How to Deploy .NET Apps to Kubernetes https://www.youtube.com/watch?v=E8ilDMg7Dak 
+    - Getting Started with OpenTelemetry in .NET https://www.youtube.com/watch?v=nFU-hcHyl2s
+    - Creating Dashboards with .Net8's new metrics https://www.youtube.com/watch?v=A2pKhNQoQUU
+

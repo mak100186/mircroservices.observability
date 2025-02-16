@@ -12,14 +12,15 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
 
+using static Constants.Constants;
+
 namespace Microservices.Observability.ServiceDefaults;
 
-// Adds common .NET Aspire services: service discovery, resilience, health checks, and OpenTelemetry.
-// This project should be referenced by each service project in your solution.
-// To learn more about using this project, see https://aka.ms/dotnet/aspire/service-defaults
 public static class Extensions
 {
-    public static IServiceCollection AddWebDefaults(this IServiceCollection services, IConfiguration configuration) => services
+    public static TBuilder AddWebDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    {
+        builder.Services
             .ConfigureHttpJsonOptions(options =>
             {
                 options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -30,7 +31,7 @@ public static class Extensions
             })
             .AddCors(options =>
             {
-                options.AddPolicy("AnyOrigin", builder =>
+                options.AddPolicy(Cors.AnyOriginPolicy, builder =>
                 {
                     builder
                         .AllowAnyOrigin()
@@ -38,8 +39,45 @@ public static class Extensions
                 });
             })
             .AddOpenApi()
-            .AddSwagger(configuration)
-            .AddHttpLogging();
+            .AddHttpLogging()
+            .AddSingleton(TimeProvider.System)
+            .AddSingleton<WeatherMetrics>();
+
+        return builder.AddSwagger();
+    }
+
+    public static TBuilder AddSwagger<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    {
+        var httpsPort = builder.Configuration["HTTPS_PORT"];
+        var baseUrl = $"https://localhost:{httpsPort}";
+
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "Version 1.0.0",
+                Title = builder.Configuration.GetValueOrDefault("CustomSwaggerUi:DocTitle", builder.Environment.ApplicationName),
+                Description = "Swagger UI Personalized using .Net 9",
+                Contact = new OpenApiContact
+                {
+                    Name = "OpenApi schema",
+                    Url = new Uri($"{baseUrl}/openapi/v1.json")
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "Swagger schema",
+                    Url = new Uri($"{baseUrl}/swagger/v1/swagger.json")
+                }
+            });
+
+            foreach (var name in Directory.GetFiles(AppContext.BaseDirectory, "*.XML", SearchOption.TopDirectoryOnly))
+            {
+                c.IncludeXmlComments(filePath: name);
+            }
+        });
+
+        return builder;
+    }
 
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
@@ -56,20 +94,12 @@ public static class Extensions
                 client.Timeout = TimeSpan.FromSeconds(30);
             });
 
-            // Turn on resilience by default
             http.AddStandardResilienceHandler();
 
-            // Turn on service discovery by default
             http.AddServiceDiscovery();
         });
 
-        // Uncomment the following to restrict the allowed schemes for service discovery.
-        // builder.Services.Configure<ServiceDiscoveryOptions>(options =>
-        // {
-        //     options.AllowedSchemes = ["https"];
-        // });
-
-        builder.Services.AddWebDefaults(builder.Configuration);
+        builder.AddWebDefaults();
 
         return builder;
     }
@@ -87,10 +117,16 @@ public static class Extensions
             {
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
+                    .AddRuntimeInstrumentation()
+                    .AddMeter(ObservabilityMetrics.MeterName);
             })
             .WithTracing(tracing =>
             {
+                if (builder.Environment.IsDevelopment())
+                {
+                    tracing.SetSampler<AlwaysOnSampler>();
+                }
+
                 tracing.AddSource(builder.Environment.ApplicationName)
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation();
@@ -165,7 +201,6 @@ public static class Extensions
 
         app.MapDefaultEndpoints();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
@@ -200,38 +235,9 @@ public static class Extensions
         return app;
     }
 
-    public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
+    private static string GetValueOrDefault(this IConfiguration configuration, string key, string defaultValue = "")
     {
-        var httpsPort = configuration["HTTPS_PORT"];
-        var baseUrl = $"https://localhost:{httpsPort}";
-
-        services.AddSwaggerGen(c =>
-        {
-            // Created the Swagger document
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Version = "Version 1.0.0",
-                Title = "",
-                Description = "Swagger UI Personalized using .Net 9",
-                Contact = new OpenApiContact
-                {
-                    Name = "OpenApi schema",
-                    Url = new Uri($"{baseUrl}/openapi/v1.json")
-                },
-                License = new OpenApiLicense
-                {
-                    Name = "Swagger schema",
-                    Url = new Uri($"{baseUrl}/swagger/v1/swagger.json")
-                }
-            });
-
-            // form 2 to generate the swagger documentation
-            foreach (var name in Directory.GetFiles(AppContext.BaseDirectory, "*.XML", SearchOption.TopDirectoryOnly))
-            {
-                c.IncludeXmlComments(filePath: name);
-            }
-        });
-
-        return services;
-    } // end method AddSwagger
+        var value = configuration[key];
+        return string.IsNullOrWhiteSpace(value) ? defaultValue : value;
+    }
 }

@@ -17,8 +17,8 @@ public class Program
         app.MapGet("/getCelsius", Endpoints.GetCelsius)
             .WithName("GetCelsius");
 
-        app.MapGet("/getFarenheit", Endpoints.GetFarenheit)
-            .WithName("GetFarenheit");
+        app.MapGet("/getFahrenheit", Endpoints.GetFahrenheit)
+            .WithName("GetFahrenheit");
 
         app.MapGet("/getCityDetails", Endpoints.GetCityDetails)
             .WithName("GetCityDetails");

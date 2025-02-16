@@ -1,3 +1,5 @@
+using Microservices.Observability.ServiceDefaults;
+using Microsoft.AspNetCore.Mvc;
 using UnitsNet;
 using UnitsNet.Units;
 
@@ -8,17 +10,17 @@ public static class Endpoints
     /// <summary>
     /// Converts a temperature in Fahrenheit to Celsius.
     /// </summary>
-    /// <param name="farenheit">the temperature value in Farenheit</param>
+    /// <param name="fahrenheit">the temperature value in Fahrenheit</param>
     /// <response code="200">The response with message</response>
-    public static IResult GetCelsius(int farenheit, CancellationToken cancellationToken) =>
-        Results.Ok(new Temperature(farenheit, TemperatureUnit.DegreeFahrenheit).DegreesCelsius);
+    public static IResult GetCelsius([FromServices] WeatherMetrics weatherMetrics, int fahrenheit) =>
+        Results.Ok(new Temperature(fahrenheit, TemperatureUnit.DegreeFahrenheit).DegreesCelsius);
 
     /// <summary>
     /// Converts a temperature in Celsius to Fahrenheit.
     /// </summary>
     /// <param name="celsius">the temperature value in Celsius</param>
     /// <response code="200">The response with message</response>
-    public static IResult GetFarenheit(int celsius, CancellationToken cancellationToken) =>
+    public static IResult GetFahrenheit([FromServices] WeatherMetrics weatherMetrics, int celsius) =>
         Results.Ok(new Temperature(celsius, TemperatureUnit.DegreeCelsius).DegreesFahrenheit);
 
     /// <summary>
@@ -27,15 +29,23 @@ public static class Endpoints
     /// <param name="city">name of the city for the full string match</param>
     /// <response code="200">The response with message</response>
     /// <response code="404">The response when the city is not found</response>
-    public static IResult GetCityDetails(string city, CancellationToken cancellationToken)
+    public static IResult GetCityDetails([FromServices] WeatherMetrics weatherMetrics, string city)
     {
-        var cityData = CityRepository.GetCityByName(city);
-
-        if (cityData == null)
+        using var _ = weatherMetrics.MeasureEnricherRequestDuration();
+        try
         {
-            return Results.NotFound();
-        }
+            var cityData = CityRepository.GetCityByName(city);
 
-        return Results.Ok(cityData.ToCityDetailsResponse());
+            if (cityData == null)
+            {
+                return Results.NotFound();
+            }
+
+            return Results.Ok(cityData.ToCityDetailsResponse());
+        }
+        finally
+        {
+            weatherMetrics.IncrementEnricherRequestCounter();
+        }
     }
 }
