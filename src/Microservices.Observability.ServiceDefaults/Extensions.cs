@@ -51,7 +51,7 @@ public static class Extensions
             .AddHttpLogging(options =>
             {
                 options.CombineLogs = true;
-                options.LoggingFields = HttpLoggingFields.RequestScheme | HttpLoggingFields.RequestMethod | HttpLoggingFields.RequestPath | HttpLoggingFields.ResponseStatusCode | HttpLoggingFields.Duration;
+                options.LoggingFields = HttpLoggingFields.RequestScheme | HttpLoggingFields.RequestMethod | HttpLoggingFields.RequestPath | HttpLoggingFields.ResponseStatusCode | HttpLoggingFields.Duration | HttpLoggingFields.RequestBody | HttpLoggingFields.ResponseBody;
             })
             .AddSingleton(TimeProvider.System)
             .AddSingleton<WeatherMetrics>();

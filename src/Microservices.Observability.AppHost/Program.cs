@@ -4,14 +4,19 @@ using Microservices.Observability.AppHost;
 var builder = DistributedApplication.CreateBuilder(args);
 builder.Services.AddLifecycleHook<LifecycleLogger>();
 
-var messaging = builder.AddKafka(name: "messaging", 9092)
-    .WithKafkaUI(kafkaUI => kafkaUI.WithHostPort(9100).WithLifetime(ContainerLifetime.Persistent))
+var cache = builder.AddRedis("cache")
+    .WithDataVolume(isReadOnly: false)
+    .WithPersistence(interval: TimeSpan.FromMinutes(5), keysChangedThreshold: 100)
+    .WithRedisInsight(insight => insight.WithLifetime(ContainerLifetime.Persistent))
+    .WithRedisCommander(commander => commander.WithLifetime(ContainerLifetime.Persistent));
+
+var messaging = builder.AddKafka(name: "kafka-server")
+    .WithKafkaUI(kafkaUI => kafkaUI.WithLifetime(ContainerLifetime.Persistent))
     .WithDataVolume(isReadOnly: false)
     .WithLifetime(ContainerLifetime.Persistent);
 
-var postgres = builder.AddPostgres("postgres", port: 5432)
-    .WithPgAdmin(pgAdmin => pgAdmin.WithHostPort(5050).WithLifetime(ContainerLifetime.Persistent))
-    .WithPgWeb(pgWeb => pgWeb.WithLifetime(ContainerLifetime.Persistent))
+var postgres = builder.AddPostgres("postgres")
+    .WithPgAdmin(pgAdmin => pgAdmin.WithLifetime(ContainerLifetime.Persistent))
     .WithDataVolume(isReadOnly: false)
     .WithLifetime(ContainerLifetime.Persistent);
 
@@ -33,6 +38,8 @@ var aggregator = builder.AddProject<Projects.Microservice_Aggregation>("microser
 
 //Enrichment
 var enricher = builder.AddProject<Projects.Microservice_Enrichment>("microservice-enrichment")
+    .WithReference(cache)
+    .WaitFor(cache)
     .WithSwaggerUI()
     .WithReDoc()
     .WithScalar();

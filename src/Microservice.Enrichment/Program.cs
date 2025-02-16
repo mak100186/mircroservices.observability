@@ -10,9 +10,13 @@ public class Program
 
         builder.AddServiceDefaultsWithOpenApi();
 
+        builder.AddRedisOutputCache("cache");
+
         var app = builder.Build();
 
         app.UseWebDefaultsWithOpenApi();
+
+        app.UseOutputCache();
 
         app.MapGet("/getCelsius", Endpoints.GetCelsius)
             .WithName("GetCelsius");
@@ -21,7 +25,8 @@ public class Program
             .WithName("GetFahrenheit");
 
         app.MapGet("/getCityDetails", Endpoints.GetCityDetails)
-            .WithName("GetCityDetails");
+            .WithName("GetCityDetails")
+            .CacheOutput();
 
         app.MapGet("/getWrongInputResponse/{input}", Endpoints.GetWrongInputResponse)
             .WithName("GetWrongInputResponse");
