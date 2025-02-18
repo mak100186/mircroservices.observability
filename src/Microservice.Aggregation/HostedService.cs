@@ -7,20 +7,30 @@ using Models;
 using static Constants.Constants;
 
 namespace Microservice.Aggregation;
+internal sealed class HostedService2(ILogger<HostedService> logger) : IHostedService
+{
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        logger.LogInformation("HostedService2 started");
+        return Task.CompletedTask;
+    }
 
-internal sealed class ConverterHostedService(IConsumer<string, AggregatedWeatherForecast> consumer, IServiceProvider serviceProvider, ILogger<ConverterHostedService> logger) : IHostedService
+    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
+}
+internal sealed class HostedService(IConsumer<string, AggregatedWeatherForecast> consumer, IServiceProvider serviceProvider, ILogger<HostedService> logger) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        logger.LogInformation("HostedService started");
         consumer.Subscribe([TopicNames.OneConverterAggregator, TopicNames.TwoConverterAggregator]);
+
         try
         {
-            while (true)
+            var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+            while (await timer.WaitForNextTickAsync(cancellationToken))
             {
                 try
                 {
-                    await Task.Delay(1000, cancellationToken);
-
                     var consumedBatch = consumer.ConsumeBatch(TimeSpan.FromSeconds(1), 10, cancellationToken);
 
                     foreach (var consumeResult in consumedBatch)

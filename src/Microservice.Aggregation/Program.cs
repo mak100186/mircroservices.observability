@@ -30,7 +30,13 @@ public class Program
             options.Config.AutoCommitIntervalMs = 5000;
         }, builder => builder.SetValueDeserializer(new KafkaMessageDeserializer<AggregatedWeatherForecast>()));
 
-        builder.Services.AddHostedService<ConverterHostedService>();
+        builder.Services.Configure<HostOptions>(options =>
+        {
+            options.ServicesStopConcurrently = options.ServicesStartConcurrently = true;
+        });
+
+        builder.Services.AddHostedService<HostedService>();
+        builder.Services.AddHostedService<HostedService2>();
 
         var app = builder.Build();
 

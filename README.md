@@ -211,9 +211,12 @@ I --> DB
 - Output cache: cache the response of the API for a specified duration.
     - Added output caching to the API to cache the response for a specified duration. This can improve performance by reducing the number of requests to the server and providing faster responses to clients.
     ![OutputCache](./docs/imgs/cache_trace.png)
+- Concurrent hosted services with thread safety and avoiding application blocking. 
+
 
 # Upcoming Improvements
 1. Parallel processing in the conerter and aggregation service.
+2. MessagePack between a provider and receiver.
 8. More functional programming and pattern matching in the services.
 10. Add grafana dashboards for the services.
 11. Default and Custom health checks for the services and dependencies.
