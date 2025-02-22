@@ -258,13 +258,22 @@ k delete service nginx-deployment
 k get svc
 k get deploy
 
+docker build -t mak100186/k8s-aspnet-local:latest .
+docker push mak100186/k8s-aspnet-local:latest
+k create deployment aspnet-deployment --image=mak100186/k8s-aspnet-local
+m ssh
+curl 10.244.0.12:8080/weatherforecast
+ k expose deployment aspnet-deployment --port=8777 --target-port=8080
+ k get services
+m ssh
+     curl 10.99.40.45:8777/weatherforecast
+     
+k expose deployment feed-generator-one-deployment --port=5023 --target-port=8080
+k scale deployment feed-generator-one-deployment --replicas=3
 
+curl 10.103.117.85:5023/weatherreport
 
-
-
-
-
-
+curl 10.244.0.16:8080/weatherreport
 
 
 
