@@ -256,4 +256,6 @@ I --> DB
     - How to Deploy .NET Apps to Kubernetes https://www.youtube.com/watch?v=E8ilDMg7Dak 
     - Getting Started with OpenTelemetry in .NET https://www.youtube.com/watch?v=nFU-hcHyl2s
     - Creating Dashboards with .Net8's new metrics https://www.youtube.com/watch?v=A2pKhNQoQUU
+31. Add generative AI:
+    - https://github.com/microsoft/Generative-AI-for-beginners-dotnet
 
