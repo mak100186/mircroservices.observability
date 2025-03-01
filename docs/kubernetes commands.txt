@@ -268,15 +268,41 @@ curl 10.244.0.12:8080/weatherforecast
 m ssh
      curl 10.99.40.45:8777/weatherforecast
      
-k expose deployment feed-generator-one-deployment --port=5023 --target-port=8080
-k scale deployment feed-generator-one-deployment --replicas=3
+     
+feed-generator-one-deployment:
+    k create deployment feed-generator-one-deployment --image=mak100186/feed-generator-one
+    k expose deployment feed-generator-one-deployment --port=5023 --target-port=8080
+    k scale deployment feed-generator-one-deployment --replicas=3
+    m ssh   
+        curl 10.103.117.85:5023/weatherreport
+        curl 10.244.0.16:8080/weatherreport
+        
+NodePort:
+    k delete service feed-generator-one-deployment
+    k expose deployment feed-generator-one-deployment --type=NodePort --port=8080
+    m service feed-generator-one-deployment --url
+        click on the returned url
+    m service feed-generator-one-deployment 
+        provides all details of the serivce and opens a tunnel for you to access the service via browser
+    
+LoadBalancer:
+    k delete svc feed-generator-one-deployment
+    k expose deployment feed-generator-one-deployment --type=LoadBalancer --port=8080
+    m service feed-generator-one-deployment
+        provides all details of the serivce and opens a tunnel for you to access the service via browser
+        Note: the external ip will be pending on minkube but on sloud provider it would have a value of the loadbalancer
+        
+New version of the image:
+    k set image deployment feed-generator-one-deployment feed-generator-one=mak100186/feed-generator-one:2.0.0
+    k rollout status deploy feed-generator-one-deployment
+    
+Delete pod:
+    k delete pod [pod name received in 'k get pods']
 
-curl 10.103.117.85:5023/weatherreport
-
-curl 10.244.0.16:8080/weatherreport
-
-
-
+Dashboard:
+        minikube dasboard
+    
+    
 deployments (exposed by the service)
     pods
         containers

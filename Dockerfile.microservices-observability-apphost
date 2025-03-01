@@ -1,0 +1,70 @@
+# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+# This stage is used when running from VS in fast mode (Default for Debug configuration)
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+
+# This stage is used to build the service project
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+
+COPY ["Directory.Packages.props", "."]
+COPY ["src/Models/Models.csproj", "Models/"]
+COPY ["src/Extensions/Extensions.csproj", "Extensions/"]
+COPY ["src/Constants/Constants.csproj", "Constants/"]
+COPY ["src/Microservices.Observability.ServiceDefaults/Microservices.Observability.ServiceDefaults.csproj", "Microservices.Observability.ServiceDefaults/"]
+COPY ["src/Aggregation.Persistence/Aggregation.Persistence.csproj", "Aggregation.Persistence/"]
+COPY ["src/Microservice.Two.Receiver/Microservice.Two.Receiver.csproj", "Microservice.Two.Receiver/"]
+COPY ["src/Microservice.One.Receiver/Microservice.One.Receiver.csproj", "Microservice.One.Receiver/"]
+COPY ["src/Microservice.Two.Converter/Microservice.Two.Converter.csproj", "Microservice.Two.Converter/"]
+COPY ["src/Microservice.One.Converter/Microservice.One.Converter.csproj", "Microservice.One.Converter/"]
+COPY ["src/Feed.Generator.One/Feed.Generator.One.csproj", "Feed.Generator.One/"]
+COPY ["src/Feed.Generator.Two/Feed.Generator.Two.csproj", "Feed.Generator.Two/"]
+COPY ["src/Microservice.Aggregation.MigrationRunner/Microservice.Aggregation.MigrationRunner.csproj", "Microservice.Aggregation.MigrationRunner/"]
+COPY ["src/Microservice.Aggregation/Microservice.Aggregation.csproj", "Microservice.Aggregation/"]
+COPY ["src/Microservice.Enrichment/Microservice.Enrichment.csproj", "Microservice.Enrichment/"]
+COPY ["src/Microservice.Presenter/Microservice.Presenter.csproj", "Microservice.Presenter/"]
+COPY ["src/Microservices.Observability.AppHost/Microservices.Observability.AppHost.csproj", "Microservices.Observability.AppHost/"]
+
+
+RUN dotnet restore Microservices.Observability.AppHost/Microservices.Observability.AppHost.csproj
+
+COPY ["src/Models/", "Models/"]
+COPY ["src/Extensions/", "Extensions/"]
+COPY ["src/Constants/", "Constants/"]
+COPY ["src/Microservices.Observability.ServiceDefaults/", "Microservices.Observability.ServiceDefaults/"]
+COPY ["src/Aggregation.Persistence/", "Aggregation.Persistence/"]
+COPY ["src/Microservice.Two.Receiver/", "Microservice.Two.Receiver/"]
+COPY ["src/Microservice.One.Receiver/", "Microservice.One.Receiver/"]
+COPY ["src/Microservice.Two.Converter/", "Microservice.Two.Converter/"]
+COPY ["src/Microservice.One.Converter/", "Microservice.One.Converter/"]
+COPY ["src/Feed.Generator.One/", "Feed.Generator.One/"]
+COPY ["src/Feed.Generator.Two/", "Feed.Generator.Two/"]
+COPY ["src/Microservice.Aggregation.MigrationRunner/", "Microservice.Aggregation.MigrationRunner/"]
+COPY ["src/Microservice.Aggregation/", "Microservice.Aggregation/"]
+COPY ["src/Microservice.Enrichment/", "Microservice.Enrichment/"]
+COPY ["src/Microservice.Presenter/", "Microservice.Presenter/"]
+COPY ["src/Microservices.Observability.AppHost/", "Microservices.Observability.AppHost/"]
+
+WORKDIR "/src/Microservices.Observability.AppHost"
+
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
+# This stage is used to publish the service project to be copied to the final stage
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=true
+
+RUN ls -la /app
+
+# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Microservices.Observability.AppHost.dll"]

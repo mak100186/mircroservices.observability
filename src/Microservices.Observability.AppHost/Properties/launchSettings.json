@@ -1,29 +1,40 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "https": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:17179;http://localhost:15042",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21081",
         "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22288"
-      }
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:17179;http://localhost:15042"
     },
     "http": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:15042",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:19022",
         "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "http://localhost:20011"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:15042"
+    },
+    "Docker Publish": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "commandLineArgs": "-NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\makof\\source\\repos\\mircroservices.observability\\docker-build-push-all.ps1\"",
+      "environmentVariables": {
+        "DOCKER_IMAGE_VERSION": "1.0.1",
+        "PROJECT_ROOT": "C:\\Users\\makof\\source\\repos\\mircroservices.observability",
+        "DOCKER_HUB_USERNAME": "mak100186",
+        "DOCKER_HUB_ACCESS_TOKEN": ""
       }
     }
-  }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
 }
