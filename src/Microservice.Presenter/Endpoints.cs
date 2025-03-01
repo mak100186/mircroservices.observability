@@ -11,9 +11,13 @@ public static class Endpoints
     /// <summary>
     /// Get the weather forecast for a city on a specific date.
     /// </summary>
-    /// <param name="city">The name of the city to search for</param>
-    /// <param name="date">The date of the weather</param>
-    /// <returns></returns>
+    /// <param name="weatherMetrics">The metrics for tracking weather-related requests.</param>
+    /// <param name="dbContext">The database context for accessing weather forecast data.</param>
+    /// <param name="enricherClient">The client for enriching weather forecast data.</param>
+    /// <param name="city">The name of the city to search for.</param>
+    /// <param name="date">The date of the weather forecast.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>The weather forecast for the specified city and date.</returns>
     public static async Task<IResult> GetWeatherForecast([FromServices] WeatherMetrics weatherMetrics, [FromServices] AggregationContext dbContext, [FromServices] EnricherClient enricherClient,
         string city, DateOnly date, CancellationToken cancellationToken)
     {

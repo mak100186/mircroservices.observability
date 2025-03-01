@@ -11,25 +11,26 @@ public static class Endpoints
     /// <summary>
     /// Converts a temperature in Fahrenheit to Celsius.
     /// </summary>
-    /// <param name="fahrenheit">the temperature value in Fahrenheit</param>
-    /// <response code="200">The response with message</response>
-    public static IResult GetCelsius([FromServices] WeatherMetrics weatherMetrics, int fahrenheit) =>
+    /// <param name="fahrenheit">The temperature value in Fahrenheit.</param>
+    /// <response code="200">The response with message.</response>
+    public static IResult GetCelsius(int fahrenheit) =>
         Results.Ok(new Temperature(fahrenheit, TemperatureUnit.DegreeFahrenheit).DegreesCelsius);
 
     /// <summary>
     /// Converts a temperature in Celsius to Fahrenheit.
     /// </summary>
-    /// <param name="celsius">the temperature value in Celsius</param>
-    /// <response code="200">The response with message</response>
-    public static IResult GetFahrenheit([FromServices] WeatherMetrics weatherMetrics, int celsius) =>
+    /// <param name="celsius">The temperature value in Celsius.</param>
+    /// <response code="200">The response with message.</response>
+    public static IResult GetFahrenheit(int celsius) =>
         Results.Ok(new Temperature(celsius, TemperatureUnit.DegreeCelsius).DegreesFahrenheit);
 
     /// <summary>
     /// Get the details of a city.
     /// </summary>
-    /// <param name="city">name of the city for the full string match</param>
-    /// <response code="200">The response with message</response>
-    /// <response code="404">The response when the city is not found</response>
+    /// <param name="weatherMetrics">The weather metrics service.</param>
+    /// <param name="city">Name of the city for the full string match.</param>
+    /// <response code="200">The response with message.</response>
+    /// <response code="404">The response when the city is not found.</response>
     public static IResult GetCityDetails([FromServices] WeatherMetrics weatherMetrics, string city)
     {
         using var _ = weatherMetrics.MeasureEnricherRequestDuration();
@@ -50,5 +51,10 @@ public static class Endpoints
         }
     }
 
+    /// <summary>
+    /// Generates a response for wrong input.
+    /// </summary>
+    /// <param name="input">The wrong input value.</param>
+    /// <response code="400">The response with error message.</response>
     public static IResult GetWrongInputResponse(string input) => throw new WrongInputException(input);
 }

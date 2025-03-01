@@ -4,7 +4,7 @@ namespace Extensions.Kafka;
 
 public static class ConsumerExtensions
 {
-    public static IList<ConsumeResult<TKey, TVal>> ConsumeBatch<TKey, TVal>(this IConsumer<TKey, TVal> consumer, TimeSpan maxWaitTime, int maxBatchSize, CancellationToken cts)
+    public static List<ConsumeResult<TKey, TVal>> ConsumeBatch<TKey, TVal>(this IConsumer<TKey, TVal> consumer, TimeSpan maxWaitTime, int maxBatchSize, CancellationToken cts)
     {
         var waitBudgetRemaining = maxWaitTime;
         var deadline = DateTime.UtcNow + waitBudgetRemaining;

@@ -7,16 +7,6 @@ using Models;
 using static Constants.Constants;
 
 namespace Microservice.Aggregation;
-internal sealed class HostedService2(ILogger<HostedService> logger) : IHostedService
-{
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        logger.LogInformation("HostedService2 started");
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
-}
 internal sealed class HostedService(IConsumer<string, AggregatedWeatherForecast> consumer, IServiceProvider serviceProvider, ILogger<HostedService> logger) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)

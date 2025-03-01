@@ -36,7 +36,6 @@ public class Program
         });
 
         builder.Services.AddHostedService<HostedService>();
-        builder.Services.AddHostedService<HostedService2>();
 
         var app = builder.Build();
 

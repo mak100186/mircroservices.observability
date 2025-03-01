@@ -11,9 +11,11 @@
     <PackageVersion Include="Aspire.Hosting.Redis" Version="9.0.0" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
     <PackageVersion Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.0.0" />
+    <PackageVersion Include="ClrHeapAllocationAnalyzer" Version="3.0.0" />
     <PackageVersion Include="FluentResults" Version="3.16.0" />
     <PackageVersion Include="InterpolatedParser" Version="1.1.4" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0" />
@@ -26,9 +28,11 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.0.12" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.7.0.110445" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.ReDoc" Version="7.2.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
+    <PackageVersion Include="System.Linq.Async" Version="6.0.1" />
     <PackageVersion Include="UnitsNet" Version="5.69.0" />
   </ItemGroup>
 </Project>
