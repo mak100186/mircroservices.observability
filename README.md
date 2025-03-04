@@ -1,37 +1,46 @@
 # Overview
+
 This solution demonstrates the use of observability in microservices using a simple example. The project is structured to showcase how multiple microservices can be orchestrated using Aspire.NET, and how observability features provided by Aspire dashboards can be utilized to monitor and manage the system.
 
 # Key Components
+
 ## Feed Generators
-- `Feed.Generator.One`: Generates data for the first cluster of microservices.
-- `Feed.Generator.Two`: Generates data for the second cluster of microservices.
+
+-   `Feed.Generator.One`: Generates data for the first cluster of microservices.
+-   `Feed.Generator.Two`: Generates data for the second cluster of microservices.
 
 ## Microservices
-- `Microservice.One.Receiver`: Receives data from Feed.Generator.One.
-- `Microservice.One.Converter`: Converts the received data and adds additional information.
-- `Microservice.Two.Receiver`: Receives data from Feed.Generator.Two.
-- `Microservice.Two.Converter`: Converts the received data and adds additional information.
-- `Microservice.Aggregation`: Aggregates data from multiple sources and stores it in the persistence layer.
-- `Microservice.Enrichment`: Enriches the aggregated data with additional information.
-- `Microservice.Presenter`: Presents the aggregated and enriched data to the end-users.
+
+-   `Microservice.One.Receiver`: Receives data from Feed.Generator.One.
+-   `Microservice.One.Converter`: Converts the received data and adds additional information.
+-   `Microservice.Two.Receiver`: Receives data from Feed.Generator.Two.
+-   `Microservice.Two.Converter`: Converts the received data and adds additional information.
+-   `Microservice.Aggregation`: Aggregates data from multiple sources and stores it in the persistence layer.
+-   `Microservice.Enrichment`: Enriches the aggregated data with additional information.
+-   `Microservice.Presenter`: Presents the aggregated and enriched data to the end-users.
 
 ## Kafka Topics
-- `One.Receiver-Converter`: Topic for data conversion from Microservice.One.Receiver.
-- `Two.Receiver-Converter`: Topic for data conversion from Microservice.Two.Receiver.
-- `One.Converter-Aggregator`: Topic for data aggregation from Microservice.One.Converter.
-- `Two.Converter-Aggregator`: Topic for data aggregation from Microservice.Two.Converter.
+
+-   `One.Receiver-Converter`: Topic for data conversion from Microservice.One.Receiver.
+-   `Two.Receiver-Converter`: Topic for data conversion from Microservice.Two.Receiver.
+-   `One.Converter-Aggregator`: Topic for data aggregation from Microservice.One.Converter.
+-   `Two.Converter-Aggregator`: Topic for data aggregation from Microservice.Two.Converter.
 
 ## Persistence
-- `Aggregation.Persistence`: Stores the aggregated data.
+
+-   `Aggregation.Persistence`: Stores the aggregated data.
 
 ## Observability
+
 The solution leverages Aspire.NET's observability features to monitor and manage the microservices. Aspire dashboards provide insights into the system's performance, health, and behavior. Key observability aspects include:
-- Metrics: Collect and display metrics such as request counts, response times, and error rates.
-- Logging: Centralized logging to capture and analyze logs from all microservices.
-- Tracing: Distributed tracing to track the flow of requests across microservices.
-- Health Checks: Regular health checks to ensure the services are running as expected.
+
+-   Metrics: Collect and display metrics such as request counts, response times, and error rates.
+-   Logging: Centralized logging to capture and analyze logs from all microservices.
+-   Tracing: Distributed tracing to track the flow of requests across microservices.
+-   Health Checks: Regular health checks to ensure the services are running as expected.
 
 # System Context Diagram
+
 This diagram shows the system context of the solution, including the external systems that interact with the microservices. It provides a high-level overview of the system architecture and the relationships between the different components.
 
 ```mermaid
@@ -103,21 +112,23 @@ sequenceDiagram
     Microservice.Aggregation ->> Aggregation.Persistence: Add or Update Forecasts
     Microservice.Aggregation ->> Aggregation.Persistence: Query Data
     Aggregation.Persistence -->> Microservice.Aggregation: Return Data
-    
+
     Presenter ->> Aggregation.Persistence: Request Aggregated Data
-    Aggregation.Persistence -->> Presenter: Return Aggregated Data    
-    
+    Aggregation.Persistence -->> Presenter: Return Aggregated Data
+
     Presenter ->> Microservice.Enrichment: Request Enriched Data
     Microservice.Enrichment -->> Presenter: Return Enriched Data
 ```
 
 # Component Diagram
+
 This diagram shows the main components of the solution, including feed generators, microservices, converters, and the aggregation persistence database. It illustrates the interactions between these components, providing a high-level overview of the system architecture.
+
 ```mermaid
-graph TD 
-    subgraph FeedGenerators 
-        A[Feed.Generator.One] 
-        D[Feed.Generator.Two] 
+graph TD
+    subgraph FeedGenerators
+        A[Feed.Generator.One]
+        D[Feed.Generator.Two]
     end
 
 subgraph Microservices
@@ -155,35 +166,38 @@ I --> DB
 ```
 
 # Learning outcomes
-- How to structure a microservices solution using Aspire.NET.
-    - Persistence of containers;
-    - File system persistence of containers data;
-    - Wait for dependencies in the containers;
-    - Passing reference to the containers;
-- Learn to use metrics, logging, tracing, and health checks for observability.
-- Documenting the system architecture using mermaid diagrams.
-- Dynamic port assignment for the services and passing the connnecting ports to the services.
-- Use result pattern for better error handling and logging. ref: FluentResults.
-- Using System.Text.Json for serialization and deserialization.
-    - Custom converters for better serialization and deserialization.
-- Addressing Cors policy in the API.
-- Resilience handling in the http client.
-- Minimal API and its associated working.
-- Swagger, ReDoc, and Scalar for API documentation.
-- Extending Aspire.NET dashboard using Commands.
-- Extend editorconfig for better code formatting, styling and performance. ref: EditorConfig.
-- Lazy pattern for singleton objects.
-- Data conversions ref: UnitsNet.
-- Messaging using Kafka. ref: Confluent.Kafka.
-- ValueObject pattern for better domain modeling.
-- Attribute based validation using System.ComponentModel.DataAnnotations.
-- Option Pattern for configuration and validation.
-- EFCore for persistence.
-    - ValueConverters for better data storage.
-    - Migrations for database schema management.
-    - Using Docker for containerization.
-- Swagger UI customisations and using the swaggerGen in .net9 
-    - Numerous modifications were done to the UI. 
+
+-   How to structure a microservices solution using Aspire.NET.
+    -   Persistence of containers;
+    -   File system persistence of containers data;
+    -   Wait for dependencies in the containers;
+    -   Passing reference to the containers;
+-   Learn to use metrics, logging, tracing, and health checks for observability.
+-   Documenting the system architecture using mermaid diagrams.
+-   Dynamic port assignment for the services and passing the connnecting ports to the services.
+-   Use result pattern for better error handling and logging. ref: FluentResults.
+-   Using System.Text.Json for serialization and deserialization.
+    -   Custom converters for better serialization and deserialization.
+-   Addressing Cors policy in the API.
+-   Resilience handling in the http client.
+-   Minimal API and its associated working.
+-   Swagger, ReDoc, and Scalar for API documentation.
+-   Extending Aspire.NET dashboard using Commands.
+-   Extend editorconfig for better code formatting, styling and performance. ref: EditorConfig.
+-   Lazy pattern for singleton objects.
+-   Data conversions ref: UnitsNet.
+-   Messaging using Kafka. ref: Confluent.Kafka.
+-   ValueObject pattern for better domain modeling.
+-   Attribute based validation using System.ComponentModel.DataAnnotations.
+-   Option Pattern for configuration and validation.
+-   EFCore for persistence.
+    -   ValueConverters for better data storage.
+    -   Migrations for database schema management.
+    -   Using Docker for containerization.
+-   Swagger UI customisations and using the swaggerGen in .net9
+
+    -   Numerous modifications were done to the UI.
+
         1. Versioning information
         2. Licensing information
         3. Schema links
@@ -191,36 +205,49 @@ I --> DB
 
         ![SwaggerCustomUI](./docs/imgs/swagger_ui_modified.png)
 
-- Custom metrics: Counter and Histogram to monitor the services.
+-   Custom metrics: Counter and Histogram to monitor the services.
     Added the following metrics that are exposed to the dashboard:
-    - enricher.requests.count: Number of requests received by Microservice.Enrichment.
-    - enricher.requests.duration: Duration of requests received by Microservice.Enrichment.
-    - presentation.requests.count: Number of requests received by Microservice.Presenter.
-    - presentation.requests.duration: Duration of requests received by Microservice.Presenter.
+
+    -   enricher.requests.count: Number of requests received by Microservice.Enrichment.
+    -   enricher.requests.duration: Duration of requests received by Microservice.Enrichment.
+    -   presentation.requests.count: Number of requests received by Microservice.Presenter.
+    -   presentation.requests.duration: Duration of requests received by Microservice.Presenter.
 
     This shows how custom metrics can be added to monitor specific aspects of the system. They are correlated with exemplar traces to provide more context and insights into the system's performance.
 
     ![HistogramWithExemplars](./docs/imgs/metrics_histogram.png)
 
-- Schema endpoints: expose json schema endpoints for OpenApi and SwaggerDoc.
-    - Added schema endpoints for OpenApi and SwaggerDoc to provide additional information about the API schema. This can be useful for generating client code or documentation based on the API schema.
-    ![SchemaEndpoints](./docs/imgs/schema_endpoint.png)
-    - The schema is json formatted and can be used to generate client code or documentation based on the API schema.
-    ![SchemaEndpoints](./docs/imgs/schema_response.png)
+-   Schema endpoints: expose json schema endpoints for OpenApi and SwaggerDoc.
 
-- Output cache: cache the response of the API for a specified duration.
-    - Added output caching to the API to cache the response for a specified duration. This can improve performance by reducing the number of requests to the server and providing faster responses to clients.
-    ![OutputCache](./docs/imgs/cache_trace.png)
-- Concurrent hosted services with thread safety and avoiding application blocking. 
+    -   Added schema endpoints for OpenApi and SwaggerDoc to provide additional information about the API schema. This can be useful for generating client code or documentation based on the API schema.
+        ![SchemaEndpoints](./docs/imgs/schema_endpoint.png)
+    -   The schema is json formatted and can be used to generate client code or documentation based on the API schema.
+        ![SchemaEndpoints](./docs/imgs/schema_response.png)
 
+-   Output cache: cache the response of the API for a specified duration.
+    -   Added output caching to the API to cache the response for a specified duration. This can improve performance by reducing the number of requests to the server and providing faster responses to clients.
+        ![OutputCache](./docs/imgs/cache_trace.png)
+-   Concurrent hosted services with thread safety and avoiding application blocking.
+-   Use SharpLab.io to understand the IL code generated by the compiler.
+-   Use ClrHeapAllocationAnalyzer to understand the heap allocations in the code.
+-   Kubernetes local cluster using minikube, kubectl.
+    -   Used powershell to build and push images to Docker Hub.
+    -   Deployed using deployment and service yamls or kubectl
+    -   Minikube an Lens used to manage the local cluster.
+-   Grafana
+    -   locally installed
+    -   testing using promlabs database and metric exploration/query design using https://demo.promlabs.com/query
+    -   Practice dashboard
+    -   Course content: https://www.youtube.com/@PromLabs/videos
 
 # Upcoming Improvements
+
 1. Parallel processing in the conerter and aggregation service.
 2. MessagePack between a provider and receiver.
-8. More functional programming and pattern matching in the services.
-10. Add grafana dashboards for the services.
-11. Default and Custom health checks for the services and dependencies.
-12. Add tests:
+3. More functional programming and pattern matching in the services.
+4. Add grafana dashboards for the services.
+5. Default and Custom health checks for the services and dependencies.
+6. Add tests:
     1. unit tests for the services. ref: AwesomeAssertions, tUnit, Moq, FakeDateTime, etc.
     2. integration tests for the dependenciesa and services.
     3. end to end tests for the services.
@@ -232,30 +259,29 @@ I --> DB
     9. contract tests for the services. ref: Pact.
     10. chaos tests for the services. ref: Chaos Monkey.
     11. architecture tests for the services. ref: ArchUnit.NET.
-13. Add validations for options. 
-14. Client side validation of received kafka messages.
-15. Add interceptors for dbcontext. Add createdOn and updatedOn for each weather update by the feedsource
-16. Add interceptors for httpclient.
-17. Add interceptors for kafka producer and consumer.
-18. Add trace id or correlation id to the messages. Use header propoagation
+7. Add validations for options.
+8. Client side validation of received kafka messages.
+9. Add interceptors for dbcontext. Add createdOn and updatedOn for each weather update by the feedsource
+10. Add interceptors for httpclient.
+11. Add interceptors for kafka producer and consumer.
+12. Add trace id or correlation id to the messages. Use header propoagation
     - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/?view=aspnetcore-9.0#http-logging-options
     - https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-9.0#header-propagation-middleware
-19. Add Upsert query for the database. Use the one created at work and improve it.
-20. Using interporlated string library as an alternative to regex ref: InterpolatedParser.
-21. Validations for naugthy strings. ref: NaughtyStrings.
-22. CPM and Version locking for the dependencies.
-23. UUIDv7 for the ids.
-24. Use StringSyntax for better developer experience.
-25. AOT for the services.
-26. Replication for the services.
-27. Add a feed provider that uses websockets
+13. Add Upsert query for the database. Use the one created at work and improve it.
+14. Using interporlated string library as an alternative to regex ref: InterpolatedParser.
+15. Validations for naugthy strings. ref: NaughtyStrings.
+16. CPM and Version locking for the dependencies.
+17. UUIDv7 for the ids.
+18. Use StringSyntax for better developer experience.
+19. AOT for the services.
+20. Replication for the services.
+21. Add a feed provider that uses websockets
     - https://medium.com/@vosarat1995/websockets-in-net-9-a-getting-started-guide-3ea5982d3782
-28. Add a feed provider that uses gRPC
-29. Seed database using https://www.youtube.com/watch?v=ESPp3uVmKhU
-30. Install minkube, aspirate and deploy the services to kubernetes local cluster. Also add replication and scaling.
-    - How to Deploy .NET Apps to Kubernetes https://www.youtube.com/watch?v=E8ilDMg7Dak 
+22. Add a feed provider that uses gRPC
+23. Seed database using https://www.youtube.com/watch?v=ESPp3uVmKhU
+24. Install minkube, aspirate and deploy the services to kubernetes local cluster. Also add replication and scaling.
+    - How to Deploy .NET Apps to Kubernetes https://www.youtube.com/watch?v=E8ilDMg7Dak
     - Getting Started with OpenTelemetry in .NET https://www.youtube.com/watch?v=nFU-hcHyl2s
     - Creating Dashboards with .Net8's new metrics https://www.youtube.com/watch?v=A2pKhNQoQUU
-31. Add generative AI:
+25. Add generative AI:
     - https://github.com/microsoft/Generative-AI-for-beginners-dotnet
-

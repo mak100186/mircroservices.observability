@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: feed-generator-one
+spec:  
+  selector:
+    app: feed-generator-one
+  ports:
+  - port: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed-generator-one
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: feed-generator-one
+  template:
+    metadata:
+      labels:
+        app: feed-generator-one
+    spec:
+      containers:
+      - name: feed-generator-one
+        image: mak100186/feed-generator-one:1.0.1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 8080

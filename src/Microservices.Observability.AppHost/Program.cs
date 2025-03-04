@@ -57,8 +57,9 @@ builder.AddProject<Projects.Microservice_Presenter>("microservice-presenter")
     .WithScalar();
 
 //Cluster 1
+IResourceBuilder<ProjectResource> feedGenOne;
 {
-    var feedGenOne = builder.AddProject<Projects.Feed_Generator_One>("feed-generator-one")
+    feedGenOne = builder.AddProject<Projects.Feed_Generator_One>("feed-generator-one")
     .WithSwaggerUI()
     .WithReDoc()
     .WithScalar();
@@ -78,8 +79,9 @@ builder.AddProject<Projects.Microservice_Presenter>("microservice-presenter")
 }
 
 //Cluster 2
+IResourceBuilder<ProjectResource> feedGenTwo;
 {
-    var feedGenTwo = builder.AddProject<Projects.Feed_Generator_Two>("feed-generator-two")
+    feedGenTwo = builder.AddProject<Projects.Feed_Generator_Two>("feed-generator-two")
     .WithSwaggerUI()
     .WithReDoc()
     .WithScalar();
@@ -97,5 +99,23 @@ builder.AddProject<Projects.Microservice_Presenter>("microservice-presenter")
         .WaitFor(aggregator)
         .WaitFor(twoConverter);
 }
+
+//Cluster 3
+{
+    var threeReceiver = builder.AddProject<Projects.Microservice_Three_Receiver>("microservice-three-receiver")
+        .WithReference(messaging)
+        .WaitFor(messaging)
+        .WaitFor(aggregator);
+}
+
+//Ingester
+builder.AddProject<Projects.Microservice_FeedIngester>("microservice-feedingester")
+    .WithReference(feedGenOne)
+    .WaitFor(feedGenOne)
+    .WithReference(feedGenTwo)
+    .WaitFor(feedGenTwo)
+    .WithSwaggerUI()
+    .WithReDoc()
+    .WithScalar();
 
 builder.Build().Run();

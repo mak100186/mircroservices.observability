@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="FluentResults" />
     <PackageReference Include="InterpolatedParser" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
   </ItemGroup>
 
 </Project>

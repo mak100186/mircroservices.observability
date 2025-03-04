@@ -301,12 +301,27 @@ Delete pod:
 
 Dashboard:
         minikube dasboard
+        
+All:
+    k delete all --all
+
+Yaml:
+    k apply -f deployment.yaml
+    k apply -f service.yaml
     
+        then do m service feed-generator-one
+        then the browser opens. nav to whatever ip is there and ~/weatherreport
+    k delete -f deployement.yaml -f service.yaml
+     k delete -f feed-generator-one.yaml -f feed-generator-two.yaml -f feed-ingester.yaml
+Exec:
+    k exec feed-ingester-78f9f5c687-h6s4w -- nslookup feed-generator-one
+        to check if the service name resolves to the ip of the cluster
+    k exec feed-ingester-78f9f5c687-gmqqb -- wget -q0- http://feed-generator-one 
     
 deployments (exposed by the service)
     pods
         containers
 
 
-
+docker push mak100186/feed-ingester:1.0.1
 

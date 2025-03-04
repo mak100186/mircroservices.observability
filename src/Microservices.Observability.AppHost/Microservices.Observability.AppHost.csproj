@@ -28,9 +28,11 @@
 	<ProjectReference Include="..\Microservice.Aggregation.MigrationRunner\Microservice.Aggregation.MigrationRunner.csproj" />
 	<ProjectReference Include="..\Microservice.Aggregation\Microservice.Aggregation.csproj" />
 	<ProjectReference Include="..\Microservice.Enrichment\Microservice.Enrichment.csproj" />
+	<ProjectReference Include="..\Microservice.FeedIngester\Microservice.FeedIngester.csproj" />
 	<ProjectReference Include="..\Microservice.One.Converter\Microservice.One.Converter.csproj" />
 	<ProjectReference Include="..\Microservice.One.Receiver\Microservice.One.Receiver.csproj" />
 	<ProjectReference Include="..\Microservice.Presenter\Microservice.Presenter.csproj" />
+	<ProjectReference Include="..\Microservice.Three.Receiver\Microservice.Three.Receiver.csproj" />
 	<ProjectReference Include="..\Microservice.Two.Converter\Microservice.Two.Converter.csproj" />
 	<ProjectReference Include="..\Microservice.Two.Receiver\Microservice.Two.Receiver.csproj" />
   </ItemGroup>

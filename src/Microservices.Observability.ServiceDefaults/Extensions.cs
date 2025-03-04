@@ -39,6 +39,10 @@ public static class Extensions
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             })
+            .Configure<HostOptions>(options =>
+            {
+                options.ServicesStopConcurrently = options.ServicesStartConcurrently = true;
+            })
             .AddCors(options =>
             {
                 options.AddPolicy(Cors.AnyOriginPolicy, builder =>
