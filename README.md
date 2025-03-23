@@ -239,6 +239,8 @@ I --> DB
     -   testing using promlabs database and metric exploration/query design using https://demo.promlabs.com/query
     -   Practice dashboard
     -   Course content: https://www.youtube.com/@PromLabs/videos
+- XUnit v3 with Microsoft Testing Platform. MS Test allows for extensions for better testing i.e. Reporting, code coverage, etc. 
+
 
 # Upcoming Improvements
 

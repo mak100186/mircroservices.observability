@@ -101,6 +101,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClusterThree", "ClusterThre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.Three.Receiver", "src\Microservice.Three.Receiver\Microservice.Three.Receiver.csproj", "{37262AA5-8000-485C-A29B-32B1F807A581}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservices.UnitTest", "tests\Microservices.UnitTest\Microservices.UnitTest.csproj", "{94DB0400-7899-9263-CFF1-56893B86D4BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,10 @@ Global
 		{37262AA5-8000-485C-A29B-32B1F807A581}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37262AA5-8000-485C-A29B-32B1F807A581}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37262AA5-8000-485C-A29B-32B1F807A581}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94DB0400-7899-9263-CFF1-56893B86D4BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94DB0400-7899-9263-CFF1-56893B86D4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94DB0400-7899-9263-CFF1-56893B86D4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94DB0400-7899-9263-CFF1-56893B86D4BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,6 +211,7 @@ Global
 		{6A4D2D39-1DEC-4CE8-BCC8-D76729DA53C5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{2746416D-3212-44CE-AC45-D72F22823155} = {28506E65-A026-4687-80AA-E29A142A330A}
 		{37262AA5-8000-485C-A29B-32B1F807A581} = {D1F0D3EB-6E22-4056-BAC2-71BD58E0A813}
+		{94DB0400-7899-9263-CFF1-56893B86D4BC} = {FBD5A8A1-48A3-4296-9646-9528C0F8CCCA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {228A7B55-64BA-4F40-B671-E94B88320121}
