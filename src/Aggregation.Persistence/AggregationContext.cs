@@ -25,9 +25,8 @@ public class AggregationContext(DbContextOptions<AggregationContext> options) : 
         modelBuilder
             .Entity<WeatherForecastModel>()
             .Property(e => e.Date)
-            .HasConversion(new DateOnlyToStringConverter());
+            .HasConversion<DateOnlyToStringConverter>();
 
-        var converter = new TemperatureConverter();
         modelBuilder
             .Entity<WeatherForecastModel>()
             .Property(e => e.Temperature)
