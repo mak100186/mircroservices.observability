@@ -32,6 +32,7 @@
 	<ProjectReference Include="..\Microservice.One.Converter\Microservice.One.Converter.csproj" />
 	<ProjectReference Include="..\Microservice.One.Receiver\Microservice.One.Receiver.csproj" />
 	<ProjectReference Include="..\Microservice.Presenter\Microservice.Presenter.csproj" />
+	<ProjectReference Include="..\Microservice.Three.Converter\Microservice.Three.Converter.csproj" />
 	<ProjectReference Include="..\Microservice.Three.Receiver\Microservice.Three.Receiver.csproj" />
 	<ProjectReference Include="..\Microservice.Two.Converter\Microservice.Two.Converter.csproj" />
 	<ProjectReference Include="..\Microservice.Two.Receiver\Microservice.Two.Receiver.csproj" />

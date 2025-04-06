@@ -1,4 +1,4 @@
-﻿namespace Models;
+namespace Models;
 
 public enum TemperatureUnit
 {
@@ -9,5 +9,6 @@ public enum TemperatureUnit
 public enum FeedProvider
 {
     FeedOne,
-    FeedTwo
+    FeedTwo,
+    FeedThree,
 }

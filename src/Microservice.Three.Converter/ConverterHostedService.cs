@@ -1,0 +1,76 @@
+
+using Confluent.Kafka;
+using Extensions.Kafka;
+using Models;
+
+using static Constants.Constants;
+
+namespace Microservice.Three.Converter;
+
+internal sealed class ConverterHostedService(IConsumer<string, WeatherForecast> consumer, ILogger<ConverterHostedService> logger, IProducer<string, AggregatedWeatherForecast> producer) : IHostedService
+{
+    public async Task ProcessMessage(ConsumeResult<string, WeatherForecast> deliveryResult, CancellationToken cancellationToken)
+    {
+        var city = deliveryResult.Message.Key;
+        var weatherForecast = deliveryResult.Message.Value;
+
+        await producer.ProduceAsync(TopicNames.ThreeConverterAggregator,
+            new Message<string, AggregatedWeatherForecast>
+            {
+                Key = deliveryResult.Message.Key,
+                Value = new AggregatedWeatherForecast
+                (
+                    FeedProvider.FeedThree,
+                    deliveryResult.Message.Key,
+                    weatherForecast.Date,
+                    weatherForecast.Temperature,
+                    weatherForecast.Summary
+                )
+            }, cancellationToken);
+    }
+
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        consumer.Subscribe(TopicNames.ThreeReceiverConverter);
+        try
+        {
+            while (true)
+            {
+                try
+                {
+                    await Task.Delay(1000, cancellationToken);
+
+                    var consumedBatch = consumer.ConsumeBatch(TimeSpan.FromSeconds(1), 10, cancellationToken);
+
+                    foreach (var consumeResult in consumedBatch)
+                    {
+                        logger.LogInformation("RX: {TopicPartitionOffset}: {Value}", consumeResult.TopicPartitionOffset, consumeResult.Message.Value);
+                        if (consumeResult.IsPartitionEOF)
+                        {
+                            logger.LogInformation("EOF: {Topic}, {Partition}, {Offset}.", consumeResult.Topic, consumeResult.Partition, consumeResult.Offset);
+                            continue;
+                        }
+
+                        await ProcessMessage(consumeResult, cancellationToken);
+
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+                }
+                catch (ConsumeException e)
+                {
+                    logger.LogError(e, "Consume error: {Reason}", e.Error.Reason);
+                }
+            }
+        }
+        catch (OperationCanceledException e)
+        {
+            logger.LogError(e, "Closing consumer.");
+            consumer.Close();
+        }
+    }
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        consumer.Close();
+        await Task.CompletedTask;
+    }
+}

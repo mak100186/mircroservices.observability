@@ -12,19 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/Microservice.Two.Converter/Microservice.Two.Converter.csproj", "src/Microservice.Two.Converter/"]
-RUN dotnet restore "./src/Microservice.Two.Converter/Microservice.Two.Converter.csproj"
+COPY ["src/Microservice.Three.Converter/Microservice.Three.Converter.csproj", "src/Microservice.Three.Converter/"]
+RUN dotnet restore "./src/Microservice.Three.Converter/Microservice.Three.Converter.csproj"
 COPY . .
-WORKDIR "/src/src/Microservice.Two.Converter"
-RUN dotnet build "./Microservice.Two.Converter.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/src/Microservice.Three.Converter"
+RUN dotnet build "./Microservice.Three.Converter.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Microservice.Two.Converter.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Microservice.Three.Converter.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Microservice.Two.Converter.dll"]
+ENTRYPOINT ["dotnet", "Microservice.Three.Converter.dll"]

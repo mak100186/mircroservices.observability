@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry;
@@ -26,6 +26,8 @@ public static class OpenTelemetryExtensions
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()
+                    .AddMeter("Microsoft.EntityFrameworkCore")
+                    .AddMeter("System.Data.SqlClient")
                     .AddMeter(ObservabilityMetrics.MeterName);
             })
             .WithTracing(tracing =>

@@ -12,7 +12,7 @@ internal sealed class HostedService(IConsumer<string, AggregatedWeatherForecast>
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("HostedService started");
-        consumer.Subscribe([TopicNames.OneConverterAggregator, TopicNames.TwoConverterAggregator]);
+        consumer.Subscribe([TopicNames.OneConverterAggregator, TopicNames.TwoConverterAggregator, TopicNames.ThreeConverterAggregator]);
 
         try
         {

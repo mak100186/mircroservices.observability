@@ -66,15 +66,13 @@ IResourceBuilder<ProjectResource> feedGenOne;
 
     var oneConverter = builder.AddProject<Projects.Microservice_One_Converter>("microservice-one-converter")
         .WithReference(messaging)
-        .WaitFor(messaging)
-        .WaitFor(aggregator);
+        .WaitFor(messaging);
 
     builder.AddProject<Projects.Microservice_One_Receiver>("microservice-one-receiver")
         .WithReference(messaging)
         .WaitFor(messaging)
         .WithReference(feedGenOne)
         .WaitFor(feedGenOne)
-        .WaitFor(aggregator)
         .WaitFor(oneConverter);
 }
 
@@ -88,24 +86,29 @@ IResourceBuilder<ProjectResource> feedGenTwo;
 
     var twoConverter = builder.AddProject<Projects.Microservice_Two_Converter>("microservice-two-converter")
         .WithReference(messaging)
-        .WaitFor(messaging)
-        .WaitFor(aggregator);
+        .WaitFor(messaging);
 
     builder.AddProject<Projects.Microservice_Two_Receiver>("microservice-two-receiver")
         .WithReference(messaging)
         .WaitFor(messaging)
         .WithReference(feedGenTwo)
         .WaitFor(feedGenTwo)
-        .WaitFor(aggregator)
         .WaitFor(twoConverter);
 }
 
 //Cluster 3
 {
+    //this receiver talks to openweathermap.org and gets the actual weather once daily
+    var threeConverter = builder.AddProject<Projects.Microservice_Three_Converter>("microservice-three-converter")
+        .WithReference(messaging)
+        .WaitFor(messaging);
+
     var threeReceiver = builder.AddProject<Projects.Microservice_Three_Receiver>("microservice-three-receiver")
         .WithReference(messaging)
         .WaitFor(messaging)
-        .WaitFor(aggregator);
+        .WaitFor(threeConverter);
+
+    ;
 }
 
 //Ingester

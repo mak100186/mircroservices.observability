@@ -20,6 +20,7 @@ public static class Constants
 
         public const string OneConverterAggregator = "One.Converter-Aggregator";
         public const string TwoConverterAggregator = "Two.Converter-Aggregator";
+        public const string ThreeConverterAggregator = "Three.Converter-Aggregator";
 
         public const string ThreeReceiverConverter = "Three.Receiver-Converter";
     }
