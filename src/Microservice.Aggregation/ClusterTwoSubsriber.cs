@@ -1,5 +1,3 @@
-using Aggregation.Persistence;
-
 using Confluent.Kafka;
 using Extensions.Kafka;
 using Models;
@@ -7,12 +5,13 @@ using Models;
 using static Constants.Constants;
 
 namespace Microservice.Aggregation;
-internal sealed class HostedService(IConsumer<string, AggregatedWeatherForecast> consumer, IServiceProvider serviceProvider, ILogger<HostedService> logger) : IHostedService
+internal sealed class ClusterTwoSubscriber([FromKeyedServices(Kafka.SubscriberTwo)] IConsumer<string, AggregatedWeatherForecast> consumer, IServiceProvider serviceProvider, ILogger<ClusterTwoSubscriber> logger)
+    : BaseHostedService(serviceProvider), IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("HostedService started");
-        consumer.Subscribe([TopicNames.OneConverterAggregator, TopicNames.TwoConverterAggregator, TopicNames.ThreeConverterAggregator]);
+        logger.LogInformation($"{nameof(ClusterTwoSubscriber)} started");
+        consumer.Subscribe(TopicNames.TwoConverterAggregator);
 
         try
         {
@@ -53,30 +52,5 @@ internal sealed class HostedService(IConsumer<string, AggregatedWeatherForecast>
     {
         consumer.Close();
         await Task.CompletedTask;
-    }
-
-    public async Task ProcessMessage(ConsumeResult<string, AggregatedWeatherForecast> deliveryResult, CancellationToken cancellationToken)
-    {
-        using var scope = serviceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AggregationContext>();
-
-        var aggregatedWeatherForecast = deliveryResult.Message.Value;
-
-        var existingWeatherForecast = dbContext.WeatherForecasts
-                                        .FirstOrDefault(x =>
-                                            x.City == aggregatedWeatherForecast.City &&
-                                            x.Date == aggregatedWeatherForecast.Date &&
-                                            x.FeedProvider == aggregatedWeatherForecast.FeedProvider);
-
-        if (existingWeatherForecast == null)
-        {
-            await dbContext.WeatherForecasts.AddAsync(aggregatedWeatherForecast.ToWeatherForecastModel(), cancellationToken);
-        }
-        else
-        {
-            existingWeatherForecast.UpdatePropertiesUsing(aggregatedWeatherForecast);
-        }
-
-        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -6,6 +6,9 @@ public static class Constants
     public static class Kafka
     {
         public const string ConnectionName = "kafka-server";
+        public const string SubscriberOne = "kafka-server-ClusterOneSubscriber";
+        public const string SubscriberTwo = "kafka-server-ClusterTwoSubscriber";
+        public const string SubscriberThree = "kafka-server-ClusterThreeSubscriber";
     }
 
     public static class Postgres

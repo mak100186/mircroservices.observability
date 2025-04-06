@@ -22,9 +22,28 @@ public class Program
 
         builder.AddNpgsqlDbContext<AggregationContext>(Postgres.ConnectionName);
 
-        builder.AddKafkaConsumer<string, AggregatedWeatherForecast>(Kafka.ConnectionName, options =>
+        builder.AddKeyedKafkaConsumer<string, AggregatedWeatherForecast>(Kafka.SubscriberOne, options =>
         {
-            options.Config.GroupId = "Microservice.Aggregator";
+            options.Config.BootstrapServers = builder.Configuration.GetConnectionString(Kafka.ConnectionName);
+            options.Config.GroupId = $"Microservice.Aggregator-{nameof(ClusterOneSubscriber)}";
+            options.Config.AutoOffsetReset = AutoOffsetReset.Earliest;
+            options.Config.EnableAutoCommit = true;
+            options.Config.AutoCommitIntervalMs = 5000;
+        }, builder => builder.SetValueDeserializer(new KafkaMessageDeserializer<AggregatedWeatherForecast>()));
+
+        builder.AddKeyedKafkaConsumer<string, AggregatedWeatherForecast>(Kafka.SubscriberTwo, options =>
+        {
+            options.Config.BootstrapServers = builder.Configuration.GetConnectionString(Kafka.ConnectionName);
+            options.Config.GroupId = $"Microservice.Aggregator-{nameof(ClusterTwoSubscriber)}";
+            options.Config.AutoOffsetReset = AutoOffsetReset.Earliest;
+            options.Config.EnableAutoCommit = true;
+            options.Config.AutoCommitIntervalMs = 5000;
+        }, builder => builder.SetValueDeserializer(new KafkaMessageDeserializer<AggregatedWeatherForecast>()));
+
+        builder.AddKeyedKafkaConsumer<string, AggregatedWeatherForecast>(Kafka.SubscriberThree, options =>
+        {
+            options.Config.BootstrapServers = builder.Configuration.GetConnectionString(Kafka.ConnectionName);
+            options.Config.GroupId = $"Microservice.Aggregator-{nameof(ClusterThreeSubscriber)}";
             options.Config.AutoOffsetReset = AutoOffsetReset.Earliest;
             options.Config.EnableAutoCommit = true;
             options.Config.AutoCommitIntervalMs = 5000;
@@ -35,7 +54,9 @@ public class Program
             options.ServicesStopConcurrently = options.ServicesStartConcurrently = true;
         });
 
-        builder.Services.AddHostedService<HostedService>();
+        builder.Services.AddHostedService<ClusterOneSubscriber>();
+        builder.Services.AddHostedService<ClusterTwoSubscriber>();
+        builder.Services.AddHostedService<ClusterThreeSubscriber>();
 
         var app = builder.Build();
 
